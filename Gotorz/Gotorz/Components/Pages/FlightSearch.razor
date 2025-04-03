@@ -1,0 +1,61 @@
+﻿@page "/flightsearch"
+@using Gotorz.Models
+@using Gotorz.Services
+@rendermode InteractiveServer
+
+@inject FlightService FlightService
+
+<h3>Search for Flights</h3>
+
+@*Search fields*@
+<input @bind="id" placeholder="ID" />
+<input @bind="from" placeholder="From" />
+<input @bind="to" placeholder="To" />
+<input @bind="departureDate" type="date" />
+
+@*Search button*@
+<button @onclick="SearchFlights">Search</button>
+<button @onclick="SearchFlightById">Search by ID</button>
+
+@*List of fligts*@
+<ul>
+    @foreach (var flight in flights)
+    {
+        <li>@flight.FlightNumber - @flight.DestinationFrom to @flight.DestinationTo at @flight.TimeDeparture</li>
+    }
+</ul>
+
+@*Flight found by ID*@
+@if (!Found) // if there is no flight to this ID
+{
+    <p>Flight not found.</p>
+}
+else if (flight is not null)
+{
+    <h4>Flight Details</h4>
+    <p><strong>Flight Number:</strong> @flight.FlightNumber</p>
+    <p><strong>Departure:</strong> @flight.TimeDeparture</p>
+    <p><strong>Arrival:</strong> @flight.TimeArrival</p>
+}
+
+@code {
+    private string from;
+    private string to;
+    private DateTime departureDate;
+    private List<Flight> flights = new();
+    
+    private int id;
+    private Flight flight;
+    private bool Found = false; // if there is no flight to this ID
+
+    private async Task SearchFlights()
+    {
+        flights = await FlightService.SearchFlightsAsync(from, to, departureDate);
+    }
+
+    private async Task SearchFlightById()
+    {
+        flight = await FlightService.SearchFlightAsyncByID(id);
+        Found = flight != null; 
+    }
+}

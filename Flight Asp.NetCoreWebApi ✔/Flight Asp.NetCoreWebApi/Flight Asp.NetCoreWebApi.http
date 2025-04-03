@@ -1,0 +1,6 @@
+@Flight_Asp.NetCoreWebApi_HostAddress = http://localhost:5149
+
+GET {{Flight_Asp.NetCoreWebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
