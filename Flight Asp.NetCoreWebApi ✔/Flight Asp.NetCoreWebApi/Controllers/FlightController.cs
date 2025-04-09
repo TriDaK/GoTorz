@@ -16,73 +16,37 @@ namespace Flight_Asp.NetCoreWebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Flight>>> GetFlights()
+        public async Task<ActionResult<IEnumerable<Flight>>> GetFlightsByCriteria(
+        string destinationFrom = null, string destinationTo = null, DateTime? date = null)
         {
-            return Ok(await _context.Flights.ToListAsync());
-        }
+            var query = _context.Flights.AsQueryable();
 
-
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Flight>> GetFlightById(int id)
-        {
-            var flight = await _context.Flights.FindAsync(id);
-            if (flight is null)
+            // Apply filters based on provided criteria
+            if (!string.IsNullOrEmpty(destinationFrom))
             {
-                return NotFound();
-            }
-            return Ok(flight);
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult<Flight>> AddFlight(Flight newFlight)
-        {
-            if (newFlight is null)
-                return BadRequest();
-
-            _context.Flights.Add(newFlight);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetFlightById), new { id = newFlight.Id }, newFlight);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFlight(int id, Flight updatedFlight)
-        {
-            var flight = await _context.Flights.FindAsync(id);
-            if (flight is null)
-            {
-                return NotFound();
+                query = query.Where(f => f.DestinationFrom == destinationFrom);
             }
 
-            // opdaterer flyinformation pånær id
-            flight.FlightNumber = updatedFlight.FlightNumber;
-            flight.FlightStatus = updatedFlight.FlightStatus;
-            flight.DestinationFrom = updatedFlight.DestinationFrom;
-            flight.DestinationTo = updatedFlight.DestinationTo;
-            flight.TimeDeparture = updatedFlight.TimeDeparture;
-            flight.TimeArrival = updatedFlight.TimeArrival;
-
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-
-
-        [HttpDelete("{id}")]
-        public async Task <ActionResult> DeleteFlight(int id)
-        {
-            var flight = await _context.Flights.FindAsync(id);
-            if (flight is null)
+            if (!string.IsNullOrEmpty(destinationTo))
             {
-                return NotFound();
+                query = query.Where(f => f.DestinationTo == destinationTo);
             }
-            _context.Flights.Remove(flight);
-            await _context.SaveChangesAsync();
 
-            return NoContent();
+            if (date.HasValue)
+            {
+                // Extract the date part from TimeDeparture and compare it with the provided date
+                query = query.Where(f => f.TimeDeparture.Date == date.Value.Date);
+            }
+
+            // Execute the query and get the results
+            var flights = await query.ToListAsync();
+
+            if (flights == null || !flights.Any())
+            {
+                return NotFound("No flights found matching the criteria.");
+            }
+
+            return Ok(flights);
         }
 
     }
