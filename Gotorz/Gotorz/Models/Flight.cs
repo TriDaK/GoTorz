@@ -10,7 +10,7 @@ namespace Gotorz.Models
         [JsonPropertyName("id")]
         public int ID { get; set; }
         [JsonPropertyName("flightNumber")]
-        public string FlightNumber { get; set; }
+        public int FlightNumber { get; set; } // int until it is corrected in DB and API to be a string
         [JsonPropertyName("flightStatus")]
         public string FlightStatus { get; set; }
         [JsonPropertyName("destinationFrom")]

@@ -18,14 +18,14 @@ namespace Gotorz.Services
 
         public async Task<List<Flight>> SearchFlightsAsync (string from, string to, DateTime departureDate)
         {
-            string url = $"https://localhost:5001/api/Flights?from={from}&to={to}&date={departureDate:yyyy-MM-dd}";
+            string url = $"https://localhost:5001/api/Flight?from={from}&to={to}&date={departureDate:yyyy-MM-dd}";
 
             return await _httpClient.GetFromJsonAsync<List<Flight>>(url) ?? new List<Flight>();
         }
 
         public async Task<Flight?> SearchFlightAsyncByID(int id) // ? because then it is OK to search a fligth that dosn't exist 
         {
-            string url = $"https://localhost:5001/api/Flights/{id}";
+            string url = $"https://localhost:5001/api/Flight/{id}";
             return await _httpClient.GetFromJsonAsync<Flight>(url);
         }
     }
