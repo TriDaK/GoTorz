@@ -7,25 +7,14 @@
 
 <h3>Search for Flights</h3>
 
+@*Flight found by ID. ONLY FOR TESTING PURPOSE*@
+By ID 
+<br/>
 @*Search fields*@
 <input @bind="id" placeholder="ID" />
-<input @bind="from" placeholder="From" />
-<input @bind="to" placeholder="To" />
-<input @bind="departureDate" type="date" />
-
+<br />
 @*Search button*@
-<button @onclick="SearchFlights">Search</button>
 <button @onclick="SearchFlightById">Search by ID</button>
-
-@*List of fligts*@
-<ul>
-    @foreach (var flight in flights)
-    {
-        <li>@flight.FlightNumber - @flight.DestinationFrom to @flight.DestinationTo at @flight.TimeDeparture</li>
-    }
-</ul>
-
-@*Flight found by ID*@
 @*indsæt en if rundt om? Så den  først skriver noget, når det trykkes på knappen og der ikke hele tiden står "Flight not found"*@
 @if (!Found) // if there is no flight to this ID
 {
@@ -39,19 +28,108 @@ else if (flight is not null)
     <p><strong>Arrival:</strong> @flight.TimeArrival</p>
 }
 
+@*Flight found by destination and time*@
+By destination and time 
+<br />
+@*Search fields*@
+<input @bind="from" placeholder="From" />
+<input @bind="to" placeholder="To" />
+<input @bind="outboundDate" type="date" />
+<input @bind="returnDate" type="date" />
+<br /> 
+@*Search button*@
+<button @onclick="SearchFlights">Search</button>
+@*List of fligts*@
+Outbound flights: 
+<br/>
+@*<ul>
+    @foreach (var flight in outboundFlights)
+    {
+        <li>@flight.FlightNumber - @flight.DestinationFrom to @flight.DestinationTo at @flight.TimeDeparture</li>
+    }
+</ul>*@
+<table>
+    <thead>
+        <tr>
+            <th>Destination From</th>
+            <th>Destination To</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+            <th>Arrival Date</th>
+            <th>Arrival Time</th>
+            <th>Flight Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var flight in outboundFlights)
+        {
+            <tr>
+                <td>@flight.DestinationFrom</td>
+                <td>@flight.DestinationTo</td>
+                <td>@flight.TimeDeparture.ToString("yyyy-MM-dd")</td>
+                <td>@flight.TimeDeparture.ToString("HH:mm")</td>
+                <td>@flight.TimeArrival.ToString("yyyy-MM-dd")</td>
+                <td>@flight.TimeArrival.ToString("HH:mm")</td>
+                <td>@flight.FlightNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>
+Return flights: 
+@*<ul>
+    @foreach (var flight in returnFlights)
+    {
+        <li>@flight.FlightNumber - @flight.DestinationFrom to @flight.DestinationTo at @flight.TimeDeparture</li>
+    }
+</ul>*@
+@*If statement around, to only show if returnFlights !null ?????*@
+<table>
+    <thead>
+        <tr>
+            <th>Destination From</th>
+            <th>Destination To</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+            <th>Arrival Date</th>
+            <th>Arrival Time</th>
+            <th>Flight Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var flight in returnFlights)
+        {
+            <tr>
+                <td>@flight.DestinationFrom</td>
+                <td>@flight.DestinationTo</td>
+                <td>@flight.TimeDeparture.ToString("yyyy-MM-dd")</td>
+                <td>@flight.TimeDeparture.ToString("HH:mm")</td>
+                <td>@flight.TimeArrival.ToString("yyyy-MM-dd")</td>
+                <td>@flight.TimeArrival.ToString("HH:mm")</td>
+                <td>@flight.FlightNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 @code {
+    // for search by destination and date
     private string from;
     private string to;
-    private DateTime departureDate;
-    private List<Flight> flights = new();
-    
+    private DateTime outboundDate;
+    private DateTime returnDate;
+    private List<Flight> outboundFlights = new();
+    private List<Flight> returnFlights = new();
+    // for search by ID
     private int id;
     private Flight flight;
     private bool Found = false; // if there is no flight to this ID
 
-    private async Task SearchFlights()
+    private async Task SearchFlights() // both outbound and return flights in one
     {
-        flights = await FlightService.SearchFlightsAsync(from, to, departureDate);
+        // list outbound flights for outbound date
+        outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate);
+        // list return flights for return date
+        returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate);
     }
 
     private async Task SearchFlightById()
