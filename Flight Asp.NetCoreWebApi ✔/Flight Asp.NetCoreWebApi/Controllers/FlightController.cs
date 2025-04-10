@@ -24,12 +24,13 @@ namespace Flight_Asp.NetCoreWebApi.Controllers
             // Apply filters based on provided criteria
             if (!string.IsNullOrEmpty(destinationFrom))
             {
-                query = query.Where(f => f.DestinationFrom == destinationFrom);
+                //query = query.Where(f => f.DestinationFrom == destinationFrom);
+                query = query.Where(f => f.DestinationFrom.Contains(destinationFrom));
             }
 
             if (!string.IsNullOrEmpty(destinationTo))
             {
-                query = query.Where(f => f.DestinationTo == destinationTo);
+                query = query.Where(f => f.DestinationTo.Contains(destinationTo));
             }
 
             if (date.HasValue)
