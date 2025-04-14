@@ -1,4 +1,6 @@
-﻿namespace Package_Api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Package_Api.Models
 {
     public class Picture
     {
@@ -6,6 +8,9 @@
         public byte[] Image { get; set; }
 
         // Foreign key for relations
-        public string PackageId { get; set; }
+        public int PackageId { get; set; }
+
+        [InverseProperty("Pictures")]
+        public Package Package { get; set; }
     }
 }

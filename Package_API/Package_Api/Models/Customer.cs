@@ -1,4 +1,6 @@
-﻿namespace Package_Api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Package_Api.Models
 {
     public class Customer
     {
@@ -6,5 +8,8 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+
+        [InverseProperty("Customer")]
+        public List<Booking> Bookings { get; set; }
     }
 }

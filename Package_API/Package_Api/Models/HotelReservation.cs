@@ -1,4 +1,6 @@
-﻿namespace Package_Api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Package_Api.Models
 {
     public class HotelReservation
     {
@@ -7,7 +9,7 @@
         public string RoomType { get; set; }
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
-        public string Amenities { get; set; }
+        public string? Amenities { get; set; }
         public decimal Price { get; set; }
 
         // Foreign key for relations
@@ -16,6 +18,9 @@
         public int HotelId { get; set; }
 
         // Navigation property
+        [InverseProperty("HotelReservations")]
         public Hotel Hotel { get; set; }
+        [InverseProperty("HotelReservations")]
+        public Package Package { get; set; }
     }
 }

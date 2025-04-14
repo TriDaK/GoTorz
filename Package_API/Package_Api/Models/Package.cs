@@ -1,4 +1,6 @@
-﻿namespace Package_Api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Package_Api.Models
 {
     public class Package
     {
@@ -6,17 +8,22 @@
         public string Name { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
-        public int FlightId { get; set; }
-        public int HotelReservationId { get; set; }
         // The employee who created the package
+        [InverseProperty("Packages")]
         public Employee Employee { get; set; }
 
         // Foreign keys for loading classes
         public int EmployeeId { get; set; }
 
         // Package is additionally connected to Pictures, Bookings, and Flights
+        [InverseProperty("Package")]
         public List<Picture> Pictures { get; set; }
+        [InverseProperty("Package")]
         public List<Booking> Bookings { get; set; }
+        [InverseProperty("Package")]
         public List<Flight> Flights { get; set; }
+
+        [InverseProperty("Package")]
+        public List<HotelReservation> HotelReservations { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Package_Api.Models
 {
@@ -14,6 +15,9 @@ namespace Package_Api.Models
 
         [JsonIgnore]
         public int BookingId { get; set; }
+
+        // [InverseProperty("Attendees")]
+        public Booking Booking { get; set; }
     }
 
     public enum Gender

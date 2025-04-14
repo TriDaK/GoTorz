@@ -1,4 +1,6 @@
-﻿namespace Package_Api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Package_Api.Models
 {
     public class Payment
     {
@@ -9,6 +11,9 @@
         public string? PaymentMethod { get; set; }
 
         public PaymentStatus PaymentStatus { get; set; }
+
+        [InverseProperty("Payment")]
+        public Booking Booking { get; set; }
     }
 
     public enum PaymentStatus

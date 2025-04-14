@@ -49,31 +49,31 @@ namespace Package_Api.Controllers
         }
 
         // PUT: api/package/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPackage(int id, Package package)
-        {
-            if (id != package.Id)
-            {
-                return BadRequest("ID mismatch");
-            }
-            _context.Entry(package).State = EntityState.Modified;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PackageExists(id))
-                {
-                    return NotFound("No package with this ID");
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return NoContent();
-        }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutPackage(int id, Package package)
+        //{
+        //    if (id != package.Id)
+        //    {
+        //        return BadRequest("ID mismatch");
+        //    }
+        //    _context.Entry(package).State = EntityState.Modified;
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!PackageExists(id))
+        //        {
+        //            return NotFound("No package with this ID");
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+        //    return NoContent();
+        //}
 
 
     }
