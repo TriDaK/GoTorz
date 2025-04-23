@@ -11,8 +11,6 @@
         public string Country { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        
-        // jeg ved ikke hvordan vi skal løse denne. liste? hvordan skal den se ud i DB?
-        //public string Ameneties { get; set; }
+  
     }
 }
