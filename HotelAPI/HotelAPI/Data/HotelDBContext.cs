@@ -7,6 +7,8 @@ namespace HotelAPI.Data
         public DbSet<Hotel> Hotels => Set<Hotel>();
         public DbSet<Room> Rooms => Set<Room>();
 
+        // Dummy data
+        //////// kan den på DB niveau se sammenhængene imellem de værelser der er og de hoteller de tilhører????????????????? 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
