@@ -12,7 +12,7 @@
         public DateTime TimeDeparture { get; set; }
         public DateTime TimeArrival { get; set; }
         public int AvailableSeats { get; set; }
-        public int price { get; set; }
+        public int Price { get; set; }
 
     }
 }
