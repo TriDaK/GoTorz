@@ -12,6 +12,6 @@ namespace Package_Api.Models
         public string? Amenities { get; set; }
 
         [InverseProperty("Hotel")]
-        public List<HotelReservation> HotelReservations { get; set; }
+        public List<AvailableRoom> AvailableRooms { get; set; }
     }
 }

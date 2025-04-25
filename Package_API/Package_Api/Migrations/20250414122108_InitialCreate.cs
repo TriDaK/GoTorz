@@ -128,7 +128,7 @@ namespace Package_Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HotelReservations",
+                name: "AvailableRooms",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -144,15 +144,15 @@ namespace Package_Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HotelReservations", x => x.Id);
+                    table.PrimaryKey("PK_AvailableRooms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HotelReservations_Hotels_HotelId",
+                        name: "FK_AvailableRooms_Hotels_HotelId",
                         column: x => x.HotelId,
                         principalTable: "Hotels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_HotelReservations_Packages_PackageId",
+                        name: "FK_AvailableRooms_Packages_PackageId",
                         column: x => x.PackageId,
                         principalTable: "Packages",
                         principalColumn: "Id",
@@ -247,13 +247,13 @@ namespace Package_Api.Migrations
                 column: "PackageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HotelReservations_HotelId",
-                table: "HotelReservations",
+                name: "IX_AvailableRooms_HotelId",
+                table: "AvailableRooms",
                 column: "HotelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HotelReservations_PackageId",
-                table: "HotelReservations",
+                name: "IX_AvailableRooms_PackageId",
+                table: "AvailableRooms",
                 column: "PackageId");
 
             migrationBuilder.CreateIndex(
@@ -283,7 +283,7 @@ namespace Package_Api.Migrations
                 name: "Flights");
 
             migrationBuilder.DropTable(
-                name: "HotelReservations");
+                name: "AvailableRooms");
 
             migrationBuilder.DropTable(
                 name: "Payments");

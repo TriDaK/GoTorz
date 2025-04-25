@@ -190,7 +190,7 @@ namespace Package_Api.Migrations
                     b.ToTable("Hotels");
                 });
 
-            modelBuilder.Entity("Package_Api.Models.HotelReservation", b =>
+            modelBuilder.Entity("Package_Api.Models.AvailableRoom", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -229,7 +229,7 @@ namespace Package_Api.Migrations
 
                     b.HasIndex("PackageId");
 
-                    b.ToTable("HotelReservations");
+                    b.ToTable("AvailableRooms");
                 });
 
             modelBuilder.Entity("Package_Api.Models.Package", b =>
@@ -356,16 +356,16 @@ namespace Package_Api.Migrations
                     b.Navigation("Package");
                 });
 
-            modelBuilder.Entity("Package_Api.Models.HotelReservation", b =>
+            modelBuilder.Entity("Package_Api.Models.AvailableRoom", b =>
                 {
                     b.HasOne("Package_Api.Models.Hotel", "Hotel")
-                        .WithMany("HotelReservations")
+                        .WithMany("AvailableRooms")
                         .HasForeignKey("HotelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Package_Api.Models.Package", "Package")
-                        .WithMany("HotelReservations")
+                        .WithMany("AvailableRooms")
                         .HasForeignKey("PackageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -428,7 +428,7 @@ namespace Package_Api.Migrations
 
             modelBuilder.Entity("Package_Api.Models.Hotel", b =>
                 {
-                    b.Navigation("HotelReservations");
+                    b.Navigation("AvailableRooms");
                 });
 
             modelBuilder.Entity("Package_Api.Models.Package", b =>
@@ -437,7 +437,7 @@ namespace Package_Api.Migrations
 
                     b.Navigation("Flights");
 
-                    b.Navigation("HotelReservations");
+                    b.Navigation("AvailableRooms");
 
                     b.Navigation("Pictures");
                 });

@@ -2,7 +2,7 @@
 
 namespace Package_Api.Models
 {
-    public class HotelReservation
+    public class AvailableRoom
     {
         public int Id { get; set; }
         public int RoomCapacity { get; set; }
@@ -18,9 +18,9 @@ namespace Package_Api.Models
         public int HotelId { get; set; }
 
         // Navigation property
-        [InverseProperty("HotelReservations")]
+        [InverseProperty("AvailableRooms")]
         public Hotel Hotel { get; set; }
-        [InverseProperty("HotelReservations")]
+        [InverseProperty("AvailableRooms")]
         public Package Package { get; set; }
     }
 }

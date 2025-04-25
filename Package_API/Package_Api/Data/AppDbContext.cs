@@ -10,7 +10,7 @@ namespace Package_Api.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Flight> Flights { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
-        public DbSet<HotelReservation> HotelReservations { get; set; }
+        public DbSet<AvailableRoom> AvailableRooms { get; set; }
         public DbSet<Package> Packages { get; set; }
         public DbSet<Picture> Pictures { get; set; }
         public DbSet<Booking> Bookings { get; set; }
@@ -20,9 +20,9 @@ namespace Package_Api.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<HotelReservation>()
+            modelBuilder.Entity<AvailableRoom>()
                 .HasOne(r => r.Hotel)
-                .WithMany(h => h.HotelReservations)
+                .WithMany(h => h.AvailableRooms)
                 .HasForeignKey(r => r.HotelId);
 
             modelBuilder.Entity<Package>()
@@ -75,9 +75,9 @@ namespace Package_Api.Data
                 .WithMany(p => p.Flights)
                 .HasForeignKey(f => f.PackageId);
 
-            modelBuilder.Entity<HotelReservation>()
+            modelBuilder.Entity<AvailableRoom>()
                 .HasOne(hr => hr.Package)
-                .WithMany(p => p.HotelReservations)
+                .WithMany(p => p.AvailableRooms)
                 .HasForeignKey(hr => hr.PackageId);
 
             modelBuilder.Entity<Payment>()
@@ -88,7 +88,7 @@ namespace Package_Api.Data
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<HotelReservation>()
+            modelBuilder.Entity<AvailableRoom>()
                 .Property(hr => hr.Price)
                 .HasColumnType("decimal(18,2)");
         }

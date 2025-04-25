@@ -24,6 +24,6 @@ namespace Package_Api.Models
         public List<Flight> Flights { get; set; }
 
         [InverseProperty("Package")]
-        public List<HotelReservation> HotelReservations { get; set; }
+        public List<AvailableRoom> AvailableRooms { get; set; }
     }
 }

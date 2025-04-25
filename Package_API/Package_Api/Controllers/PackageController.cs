@@ -32,20 +32,84 @@ namespace Package_Api.Controllers
                 return NotFound("No package with this ID");
             }
             return Ok(package);
+
+            /*
+             * PackageById needs to following:
+             * - Package itself
+             * - Employee who created the package
+             * - - Id and Name
+             * - Enough flight data that the flight can be identified
+             * - - 
+             * - Enough hotelreservation data that the hotelreservation can be identified
+             */
         }
 
         // POST: api/package
         [HttpPost]
-        public async Task<ActionResult<Package>> PostPackage(Package package)
+        public async Task<ActionResult<Package>> PostPackage
+            (List<Flight> flights, List<AvailableRoom> rooms, 
+            int employeeId, string name, string description)
         {
-            if (package == null)
+            // Init employee
+            Employee employee = null;
+            
+            // Check if incoming data is valid
+            if (flights == null)
+                return BadRequest("Flights are null");
+            if (rooms == null)
+                return BadRequest("Rooms are null");
+            if (employeeId <= 0)
+                return BadRequest("Employee ID is negative");
+            if (string.IsNullOrEmpty(name))
+                return BadRequest("Name is empty or null");
+            if (string.IsNullOrEmpty(description))
+                return BadRequest("Description is empty or null");
+            // Check if employee exists
+            try
             {
-                return BadRequest("Package returned null");
+                employee = await _context.Employees.FindAsync(employeeId);
+                if (employee == null)
+                    return NotFound("Employee not found");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error finding employee: {ex.Message}");
             }
 
-            _context.Packages.Add(package);
+            // Set package with incoming information
+            Package newPackage = new Package
+            {
+                EmployeeId = employeeId,
+                Employee = employee,
+                Flights = flights,
+                AvailableRooms = rooms,
+                Name = name,
+                Description = description,
+            };
+
+            // Assign foreign keys to flights and rooms
+            foreach (var flight in flights)
+            {
+                flight.PackageId = newPackage.Id; // Set PackageId for each flight
+            }
+
+            foreach (var room in rooms)
+            {
+                room.PackageId = newPackage.Id;  // Set PackageId for each room or room reservation
+            }
+
+            /*
+             * Following are the temporary data to fill out a package with dummy
+             * Current dummy includes: 
+             * Pictures
+             */
+            List<Picture> pictures = new List<Picture>();
+            newPackage.Pictures = pictures;
+
+            // Package to context
+            _context.Packages.Add(newPackage);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetPackage), new { id = package.Id }, package);
+            return CreatedAtAction(nameof(GetPackage), new { id = newPackage.Id }, newPackage);
         }
 
         // PUT: api/package/5
