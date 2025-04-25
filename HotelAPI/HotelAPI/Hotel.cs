@@ -11,6 +11,9 @@
         public string Country { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+
+        // DB multiplicity ref
+        public ICollection<Room> Rooms { get; set; }
   
     }
 }

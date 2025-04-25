@@ -9,5 +9,9 @@
         public DateTime CheckOut { get; set; }
         public double Rating { get; set; }
         public double Price { get; set; }
+
+        // DB multiplicity ref
+        public int HotelID { get; set; }
+        public Hotel Hotel { get; set; }
     }
 }

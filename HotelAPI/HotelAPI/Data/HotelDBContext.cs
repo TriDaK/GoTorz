@@ -13,6 +13,10 @@ namespace HotelAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // mulitiplicity on the DB
+            modelBuilder.Entity<Hotel>()
+                .HasMany(h => h.Rooms).WithOne(r => r.Hotel).HasForeignKey(r => r.HotelID);
+
             modelBuilder.Entity<Hotel>().HasData(
                 new Hotel
                 {
@@ -88,24 +92,24 @@ namespace HotelAPI.Data
                 } );
 
             modelBuilder.Entity<Room>().HasData(
-                new Room { ID = 1, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 4.2, Price = 100, },
-                new Room { ID = 2, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.5, Price = 150, },
-                new Room { ID = 3, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.8, Price = 300, },
-                new Room { ID = 4, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 3.8, Price = 90, },
-                new Room { ID = 5, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.0, Price = 140, },
-                new Room { ID = 6, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.6, Price = 280, },
-                new Room { ID = 7, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 4.0, Price = 110, },
-                new Room { ID = 8, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.1, Price = 160, },
-                new Room { ID = 9, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.9, Price = 310, },
-                new Room { ID = 10, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 3.9, Price = 95, },
-                new Room { ID = 11, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.2, Price = 145, },
-                new Room { ID = 12, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.7, Price = 295, },
-                new Room { ID = 13, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 4.3, Price = 105, },
-                new Room { ID = 14, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.4, Price = 155, },
-                new Room { ID = 15, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.9, Price = 320, },
-                new Room { ID = 16, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 4.1, Price = 98, },
-                new Room { ID = 17, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.3, Price = 142, },
-                new Room { ID = 18, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.6, Price = 305, }
+                new Room { ID = 1, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 4.2, Price = 100, HotelID = 1 },
+                new Room { ID = 2, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.5, Price = 150, HotelID = 1 },
+                new Room { ID = 3, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.8, Price = 300, HotelID = 1 },
+                new Room { ID = 4, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 3.8, Price = 90, HotelID = 2 },
+                new Room { ID = 5, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.0, Price = 140, HotelID = 2 },
+                new Room { ID = 6, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.6, Price = 280, HotelID = 2 },
+                new Room { ID = 7, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 4.0, Price = 110, HotelID = 3 },
+                new Room { ID = 8, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.1, Price = 160, HotelID = 3 },
+                new Room { ID = 9, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.9, Price = 310, HotelID = 3 },
+                new Room { ID = 10, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 3.9, Price = 95, HotelID = 4 },
+                new Room { ID = 11, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.2, Price = 145, HotelID = 4 },
+                new Room { ID = 12, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.7, Price = 295, HotelID = 4 },
+                new Room { ID = 13, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 4.3, Price = 105, HotelID = 5 },
+                new Room { ID = 14, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.4, Price = 155, HotelID = 5 },
+                new Room { ID = 15, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.9, Price = 320, HotelID = 5 },
+                new Room { ID = 16, Type = "Single", Capacity = 1, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(1), Rating = 4.1, Price = 98, HotelID = 6 },
+                new Room { ID = 17, Type = "Double", Capacity = 2, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(2), Rating = 4.3, Price = 142, HotelID = 6 },
+                new Room { ID = 18, Type = "Suite", Capacity = 4, CheckIn = DateTime.Today, CheckOut = DateTime.Today.AddDays(3), Rating = 4.6, Price = 305, HotelID = 6 }
             );
         }
 
