@@ -1,13 +1,14 @@
 ﻿using HotelAPI.Data;
+using HotelAPI.DTO;
 using HotelAPI.Models;
-using Microsoft.AspNetCore.Components;
+// using Microsoft.AspNetCore.Components; // hvis denne er på er der en fejl på "Route", jeg ved ikke om den skal bruges andre steder 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 
 namespace HotelAPI.Controllers
 {
-    [Route("api/[controller]")] /////// HVORFOOOOOOOOOOR?????
+    [Route("api/[controller]")] 
     [ApiController]
     public class HotelRoomController : ControllerBase
     {
@@ -19,26 +20,50 @@ namespace HotelAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hotel>>> GetHotelRoomByCriteria() /* indsæt de kriterier man kan bruge til at søge hotel efter
-                                                                                      * by, kapasitet, 
-                                                                                      == null til at starte med, så de ikke søges efter hvis de ikke er sat */
+        public async Task<ActionResult<IEnumerable<Hotel>>> GetHotelRoomByCriteria(
+            int? hotelID = null, int? roomID = null , string city = null ,  int? capacity = null) 
         {
-            var query = _context.Hotels.AsQueryable(); //Hotels DbSet in HotelDBContext
+            var query = _context.Rooms.Include(r => r.Hotel).AsQueryable(); //Rooms DbSet in HotelDBContext
 
             // search filters based on incoming criterias 
-            // if statements
-                /* 
-                 * if (!string.IsNullOrEmpty(destinationTo))
-                {
-                query = query.Where(f => f.DestinationTo.Contains(destinationTo));
-                }
-                */
-            // City - alle der ligger indenfor den by 
-            // capacity - værelser med minimum den kapasitet
+            if (hotelID.HasValue) // hotelID
+            {
+                query = query.Where(r => r.HotelID == hotelID);
+            }
+            if (roomID.HasValue) // roomID
+            {
+                query = query.Where(r => r.ID == roomID); // fix så den tager room.ID og ikke hotel.ID
+            }
+            if (!string.IsNullOrEmpty(city)) // city
+            {
+                query = query.Where(r => r.Hotel.City.Contains(city));
+            }
+            if (capacity.HasValue) // capacity
+            {
+                query = query.Where(r => r.Capacity == capacity);
+            }
 
-            var hotels = await query.ToListAsync();
+            var rooms = await query.Select(r => new RoomDTO
+            {
+                RoomID = r.ID,
+                Type = r.Type, 
+                Capacity = r.Capacity,
+                CheckIn = r.CheckIn,
+                CheckOut = r.CheckOut,
+                Rating = r.Rating,
+                Price = r.Price,
+                HotelID = r.Hotel.ID,
+                Name = r.Hotel.Name,
+                StreetName = r.Hotel.StreetName,
+                StreetNo = r.Hotel.StreetNo,
+                Zipcode = r.Hotel.Zipcode,
+                City = r.Hotel.City,
+                Country = r.Hotel.Country,
+                Email = r.Hotel.Email,
+                Phone = r.Hotel.Phone
+            }).ToListAsync();
 
-            return Ok(hotels);
+            return Ok(rooms);
         }
     }
 }
