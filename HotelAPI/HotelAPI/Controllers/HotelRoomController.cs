@@ -26,25 +26,26 @@ namespace HotelAPI.Controllers
             var query = _context.Rooms.Include(r => r.Hotel).AsQueryable(); //Rooms DbSet in HotelDBContext
 
             // search filters based on incoming criterias 
-            if (hotelID.HasValue) // hotelID
+            if (hotelID.HasValue)
             {
                 query = query.Where(r => r.HotelID == hotelID);
             }
-            if (roomID.HasValue) // roomID
+            if (roomID.HasValue)
             {
-                query = query.Where(r => r.ID == roomID); // fix så den tager room.ID og ikke hotel.ID
+                query = query.Where(r => r.ID == roomID);
             }
-            if (!string.IsNullOrEmpty(city)) // city
+            if (!string.IsNullOrEmpty(city))
             {
                 query = query.Where(r => r.Hotel.City.Contains(city));
             }
-            if (capacity.HasValue) // capacity
+            if (capacity.HasValue)
             {
-                query = query.Where(r => r.Capacity == capacity);
+                query = query.Where(r => r.Capacity >= capacity);
             }
 
+            // query rooms with criterias and save in list 
             var rooms = await query.Select(r => new RoomDTO
-            {
+            { // the data from the DB we want to send out of the API
                 RoomID = r.ID,
                 Type = r.Type, 
                 Capacity = r.Capacity,
@@ -62,6 +63,12 @@ namespace HotelAPI.Controllers
                 Email = r.Hotel.Email,
                 Phone = r.Hotel.Phone
             }).ToListAsync();
+
+            // if no rooms found with the criterias
+            if(rooms == null || rooms.Any())
+            {
+                return NotFound("No rooms found matching the criterias");
+            }
 
             return Ok(rooms);
         }
