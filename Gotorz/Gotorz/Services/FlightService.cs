@@ -33,7 +33,13 @@ namespace Gotorz.Services
                 url += $"date={departureDate:yyyy-MM-dd}";
             }
 
-            return await _httpClient.GetFromJsonAsync<List<Flight>>(url) ?? new List<Flight>();
-        }
+            try
+            { 
+                return await _httpClient.GetFromJsonAsync<List<Flight>>(url) ?? new List<Flight>();
+            }
+            catch
+            {
+                return new List<Flight>(); // blank liste tilbage
+            }
     }
 }
