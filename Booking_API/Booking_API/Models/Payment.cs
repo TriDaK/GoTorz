@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Package_Api.Models
+namespace Booking_Api.Models
 {
     public class Payment
     {

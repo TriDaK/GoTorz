@@ -19,8 +19,6 @@ namespace Package_Api.Models
         [InverseProperty("Package")]
         public List<Picture> Pictures { get; set; }
         [InverseProperty("Package")]
-        public List<Booking> Bookings { get; set; }
-        [InverseProperty("Package")]
         public List<Flight> Flights { get; set; }
 
         [InverseProperty("Package")]

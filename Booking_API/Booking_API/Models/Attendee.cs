@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace Package_Api.Models
+namespace Booking_Api.Models
 {
     public class Attendee
     {

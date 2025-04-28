@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Package_Api.Models
+namespace Booking_Api.Models
 {
     public class Booking
     {
@@ -9,8 +9,6 @@ namespace Package_Api.Models
 
         [InverseProperty("Bookings")]
         public Customer Customer { get; set; }
-        [InverseProperty("Bookings")]
-        public Package Package { get; set; }
 
         public List<Attendee> Attendees { get; set; }
 
