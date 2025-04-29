@@ -10,11 +10,11 @@ namespace HotelAPI.Controllers
 {
     [Route("api/[controller]")] 
     [ApiController]
-    public class HotelRoomController : ControllerBase
+    public class RoomsController : ControllerBase
     {
         private readonly HotelDBContext _context;
 
-        public HotelRoomController(HotelDBContext context)
+        public RoomsController(HotelDBContext context)
         {
             _context = context;
         }
