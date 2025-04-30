@@ -108,7 +108,11 @@ namespace Package_Api.Controllers
             _context.Packages.Add(package);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPackage), new { id = package.Id }, package);
+            return CreatedAtAction(nameof(GetPackage), new { id = package.Id }, new
+            {
+                Message = "Package created successfully",
+                package.Id
+            });
         }
 
         // PUT: api/package/5
