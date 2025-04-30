@@ -17,7 +17,7 @@ namespace Flight_Asp.NetCoreWebApi.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Flight>>> GetFlightsByCriteria(
-        string destinationFrom = null, string destinationTo = null, DateTime? date = null)
+        string destinationFrom = null, string destinationTo = null, DateTime? date = null, string flightnumber = null)
         {
             var query = _context.Flights.AsQueryable();
 
@@ -37,6 +37,11 @@ namespace Flight_Asp.NetCoreWebApi.Controllers
             {
                 // Extract the date part from TimeDeparture and compare it with the provided date
                 query = query.Where(f => f.TimeDeparture.Date == date.Value.Date);
+            }
+
+            if (!string.IsNullOrEmpty(flightnumber))
+            {
+                query = query.Where(f => f.FlightNumber.Contains(flightnumber));
             }
 
             // Execute the query and get the results

@@ -16,11 +16,11 @@ namespace Gotorz.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<Flight>> SearchFlightsAsync (string? from, string? to, DateTime? departureDate)
+        public async Task<List<Flight>> SearchFlightsAsync(string? from, string? to, DateTime? departureDate)
         {
             string url = "https://localhost:5001/api/Flight?";
 
-            if(!string.IsNullOrWhiteSpace(from))
+            if (!string.IsNullOrWhiteSpace(from))
             {
                 url += $"destinationFrom={from}&";
             }
@@ -34,12 +34,13 @@ namespace Gotorz.Services
             }
 
             try
-            { 
+            {
                 return await _httpClient.GetFromJsonAsync<List<Flight>>(url) ?? new List<Flight>();
             }
             catch
             {
                 return new List<Flight>(); // blank liste tilbage
             }
+        }
     }
 }

@@ -91,9 +91,6 @@ By destination and time
 
     private async Task SearchFlights() // both outbound and return flights in one
     {
-        ////////// try catch eller if. hvis der ikke kommer noget respons skal listen være tom og ikke give en fejl !!!!!
-        // har den problemer med at lave visningerne på tomme lister?
-
         // list outbound flights for outbound date
         outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate);
                 
