@@ -17,12 +17,12 @@ namespace Package_Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Package_Api.Models.Attendee", b =>
+            modelBuilder.Entity("Package_Api.Models.AvailableRoom", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,83 +30,38 @@ namespace Package_Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("Birthdate")
-                        .HasColumnType("date");
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
+                    b.Property<string>("Amenities")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nationality")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
-
-                    b.ToTable("Attendees");
-                });
-
-            modelBuilder.Entity("Package_Api.Models.Booking", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("BookingDate")
+                    b.Property<DateTime>("CheckIn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<DateTime>("CheckOut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("HotelId")
                         .HasColumnType("int");
 
                     b.Property<int>("PackageId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("RoomCapacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoomType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("HotelId");
 
                     b.HasIndex("PackageId");
 
-                    b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("Package_Api.Models.Customer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Customers");
+                    b.ToTable("AvailableRooms");
                 });
 
             modelBuilder.Entity("Package_Api.Models.Employee", b =>
@@ -187,48 +142,6 @@ namespace Package_Api.Migrations
                     b.ToTable("Hotels");
                 });
 
-            modelBuilder.Entity("Package_Api.Models.AvailableRoom", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Amenities")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CheckIn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CheckOut")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("HotelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PackageId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("RoomCapacity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RoomType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HotelId");
-
-                    b.HasIndex("PackageId");
-
-                    b.ToTable("AvailableRooms");
-                });
-
             modelBuilder.Entity("Package_Api.Models.Package", b =>
                 {
                     b.Property<int>("Id")
@@ -258,38 +171,6 @@ namespace Package_Api.Migrations
                     b.ToTable("Packages");
                 });
 
-            modelBuilder.Entity("Package_Api.Models.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("FinalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("PaymentDue")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PaymentMethod")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId")
-                        .IsUnique();
-
-                    b.ToTable("Payments");
-                });
-
             modelBuilder.Entity("Package_Api.Models.Picture", b =>
                 {
                     b.Property<int>("Id")
@@ -312,47 +193,6 @@ namespace Package_Api.Migrations
                     b.ToTable("Pictures");
                 });
 
-            modelBuilder.Entity("Package_Api.Models.Attendee", b =>
-                {
-                    b.HasOne("Package_Api.Models.Booking", "Booking")
-                        .WithMany("Attendees")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-                });
-
-            modelBuilder.Entity("Package_Api.Models.Booking", b =>
-                {
-                    b.HasOne("Package_Api.Models.Customer", "Customer")
-                        .WithMany("Bookings")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Package_Api.Models.Package", "Package")
-                        .WithMany("Bookings")
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Package");
-                });
-
-            modelBuilder.Entity("Package_Api.Models.Flight", b =>
-                {
-                    b.HasOne("Package_Api.Models.Package", "Package")
-                        .WithMany("Flights")
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Package");
-                });
-
             modelBuilder.Entity("Package_Api.Models.AvailableRoom", b =>
                 {
                     b.HasOne("Package_Api.Models.Hotel", "Hotel")
@@ -372,6 +212,17 @@ namespace Package_Api.Migrations
                     b.Navigation("Package");
                 });
 
+            modelBuilder.Entity("Package_Api.Models.Flight", b =>
+                {
+                    b.HasOne("Package_Api.Models.Package", "Package")
+                        .WithMany("Flights")
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Package");
+                });
+
             modelBuilder.Entity("Package_Api.Models.Package", b =>
                 {
                     b.HasOne("Package_Api.Models.Employee", "Employee")
@@ -383,17 +234,6 @@ namespace Package_Api.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("Package_Api.Models.Payment", b =>
-                {
-                    b.HasOne("Package_Api.Models.Booking", "Booking")
-                        .WithOne("Payment")
-                        .HasForeignKey("Package_Api.Models.Payment", "BookingId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-                });
-
             modelBuilder.Entity("Package_Api.Models.Picture", b =>
                 {
                     b.HasOne("Package_Api.Models.Package", "Package")
@@ -403,19 +243,6 @@ namespace Package_Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Package");
-                });
-
-            modelBuilder.Entity("Package_Api.Models.Booking", b =>
-                {
-                    b.Navigation("Attendees");
-
-                    b.Navigation("Payment")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Package_Api.Models.Customer", b =>
-                {
-                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("Package_Api.Models.Employee", b =>
@@ -430,11 +257,9 @@ namespace Package_Api.Migrations
 
             modelBuilder.Entity("Package_Api.Models.Package", b =>
                 {
-                    b.Navigation("Bookings");
+                    b.Navigation("AvailableRooms");
 
                     b.Navigation("Flights");
-
-                    b.Navigation("AvailableRooms");
 
                     b.Navigation("Pictures");
                 });

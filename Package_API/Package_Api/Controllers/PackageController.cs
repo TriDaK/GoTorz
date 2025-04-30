@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Package_Api.Models;
+using Package_Api.DTOs;
 
 namespace Package_Api.Controllers
 {
@@ -47,9 +48,16 @@ namespace Package_Api.Controllers
         // POST: api/package
         [HttpPost]
         public async Task<ActionResult<Package>> PostPackage
-            (List<Flight> flights, List<AvailableRoom> rooms, 
-            int employeeId, string name, string description)
+            ([FromBody] PackageCreateRequest request)
         {
+            // Request body
+            var flights = request.Flights;
+            var rooms = request.Rooms;
+            var employeeId = request.EmployeeId;
+            var name = request.Name;
+            var description = request.Description;
+
+
             // Init employee
             Employee employee = null;
             
