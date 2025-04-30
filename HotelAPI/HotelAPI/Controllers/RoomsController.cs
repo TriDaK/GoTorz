@@ -65,7 +65,7 @@ namespace HotelAPI.Controllers
             }).ToListAsync();
 
             // if no rooms found with the criterias
-            if(rooms == null || rooms.Any())
+            if(rooms == null || !rooms.Any())
             {
                 return NotFound("No rooms found matching the criterias");
             }
