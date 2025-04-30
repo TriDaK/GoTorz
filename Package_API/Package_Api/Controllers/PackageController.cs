@@ -25,24 +25,55 @@ namespace Package_Api.Controllers
 
         // GET: api/package/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Package>> GetPackage(int id)
+        public async Task<ActionResult<PackageResponseDto>> GetPackage(int id)
         {
-            var package = await _context.Packages.FindAsync(id);
-            if (package == null)
-            {
-                return NotFound("No package with this ID");
-            }
-            return Ok(package);
+            var package = await _context.Packages
+                .Include(p => p.Flights)
+                .Include(p => p.AvailableRooms)
+                    .ThenInclude(r => r.Hotel)
+                .Include(p => p.Pictures)
+                .Include(p => p.Employee)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            /*
-             * PackageById needs to following:
-             * - Package itself
-             * - Employee who created the package
-             * - - Id and Name
-             * - Enough flight data that the flight can be identified
-             * - - 
-             * - Enough hotelreservation data that the hotelreservation can be identified
-             */
+            if (package == null)
+                return NotFound("Package not found");
+
+            // Sort rooms into their hotel
+            var hotelRooms = package.AvailableRooms
+                .GroupBy(r => r.Hotel)
+                .First();
+
+            var response = new PackageResponseDto
+            {
+                Id = package.Id,
+                Name = package.Name,
+                Description = package.Description,
+                EmployeeName = package.Employee?.Name,
+                Flights = package.Flights.Select(f => new FlightDto
+                {
+                    FlightNumber = f.FlightNumber,
+                    Departure = f.Departure
+                }).ToList(),
+                Hotel = new HotelWithRoomsDto
+                {
+                    Phone = hotelRooms.Key?.Phone,
+                    Rooms = hotelRooms.Select(r => new RoomDto
+                    {
+                        RoomCapacity = r.RoomCapacity,
+                        RoomType = r.RoomType,
+                        CheckIn = r.CheckIn,
+                        CheckOut = r.CheckOut
+                    }).ToList()
+                },
+                //Pictures = package.Pictures?.Select(pic => new PictureDto
+                //{
+                //    Id = pic.Id,
+                //    ImageBytes = pic.ImageBytes
+                //}).ToList()
+                Pictures = new List<PictureDto>()
+            };
+
+            return Ok(response);
         }
 
         // POST: api/package
