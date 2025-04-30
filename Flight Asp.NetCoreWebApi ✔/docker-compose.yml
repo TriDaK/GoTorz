@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  api:
+    build: 
+      context: ./product-api
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - product-network
+    restart: always
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@ssw0rd123
+    volumes:
+      - sqldata:/var/opt/mssql
+    networks:
+      - product-network
+    restart: always
+
+networks:
+  product-network:
+    driver: bridge
+
+volumes:
+  sqldata:
+    driver: local
