@@ -40,14 +40,6 @@ namespace Package_Api.Data
                 .HasOne(hr => hr.Package)
                 .WithMany(p => p.AvailableRooms)
                 .HasForeignKey(hr => hr.PackageId);
-
-            modelBuilder.Entity<Package>()
-                .Property(p => p.Price)
-                .HasColumnType("decimal(18,2)");
-
-            modelBuilder.Entity<AvailableRoom>()
-                .Property(hr => hr.Price)
-                .HasColumnType("decimal(18,2)");
         }
     }
 }

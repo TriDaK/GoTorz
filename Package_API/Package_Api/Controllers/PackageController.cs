@@ -56,10 +56,6 @@ namespace Package_Api.Controllers
             var employeeId = request.EmployeeId;
             var name = request.Name;
             var description = request.Description;
-
-
-            // Init employee
-            Employee employee = null;
             
             // Check if incoming data is valid
             if (flights == null)
@@ -72,52 +68,47 @@ namespace Package_Api.Controllers
                 return BadRequest("Name is empty or null");
             if (string.IsNullOrEmpty(description))
                 return BadRequest("Description is empty or null");
-            // Check if employee exists
-            try
+
+            // Check if Hotel exists
+            var existingHotel = await _context.Hotels.FirstOrDefaultAsync
+                (h => h.Phone == request.Hotel.Phone);
+
+            if (existingHotel == null)
             {
-                employee = await _context.Employees.FindAsync(employeeId);
-                if (employee == null)
-                    return NotFound("Employee not found");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error finding employee: {ex.Message}");
+                existingHotel = new Hotel { Phone = request.Hotel.Phone };
+                _context.Hotels.Add(existingHotel);
+                await _context.SaveChangesAsync();
             }
 
             // Set package with incoming information
-            Package newPackage = new Package
+            var package = new Package
             {
-                EmployeeId = employeeId,
-                Employee = employee,
-                Flights = flights,
-                AvailableRooms = rooms,
-                Name = name,
-                Description = description,
+                EmployeeId = request.EmployeeId,
+                Name = request.Name,
+                Description = request.Description,
+                Flights = request.Flights.Select(f => new Flight
+                {
+                    FlightNumber = f.FlightNumber,
+                    Departure = f.Departure
+                }).ToList(),
+                AvailableRooms = request.Rooms.Select(r => new AvailableRoom
+                {
+                    RoomCapacity = r.RoomCapacity,
+                    RoomType = r.RoomType,
+                    CheckIn = r.CheckIn,
+                    CheckOut = r.CheckOut,
+                    HotelId = existingHotel.Id
+                }).ToList()
             };
 
-            // Assign foreign keys to flights and rooms
-            foreach (var flight in flights)
-            {
-                flight.PackageId = newPackage.Id; // Set PackageId for each flight
-            }
-
-            foreach (var room in rooms)
-            {
-                room.PackageId = newPackage.Id;  // Set PackageId for each room or room reservation
-            }
-
-            /*
-             * Following are the temporary data to fill out a package with dummy
-             * Current dummy includes: 
-             * Pictures
-             */
             List<Picture> pictures = new List<Picture>();
-            newPackage.Pictures = pictures;
+            package.Pictures = pictures;
 
             // Package to context
-            _context.Packages.Add(newPackage);
+            _context.Packages.Add(package);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetPackage), new { id = newPackage.Id }, newPackage);
+
+            return CreatedAtAction(nameof(GetPackage), new { id = package.Id }, package);
         }
 
         // PUT: api/package/5
