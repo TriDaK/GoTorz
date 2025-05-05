@@ -18,9 +18,29 @@ namespace Package_Api.Controllers
 
         // GET: api/package
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Package>>> GetPackages()
+        public async Task<ActionResult<IEnumerable<PackageResponseDto>>> GetPackages()
         {
-            return await _context.Packages.ToListAsync();
+            var packages = await _context.Packages.Include(p => p.Employee).ToListAsync();
+            
+            var response = new List<PackageResponseDto>();
+
+            foreach (var package in packages)
+            {
+                response.Add(
+                    new PackageResponseDto
+                    {
+                        Id = package.Id,
+                        Name = package.Name,
+                        Description = package.Description,
+                        Employee = new EmployeeDto
+                        {
+                            EmployeeId = package.Employee.Id,
+                            EmployeeName = package.Employee.Name
+                        }
+                    });
+            }
+
+            return Ok(response);
         }
 
         // GET: api/package/5
@@ -48,7 +68,11 @@ namespace Package_Api.Controllers
                 Id = package.Id,
                 Name = package.Name,
                 Description = package.Description,
-                EmployeeName = package.Employee?.Name,
+                Employee = new EmployeeDto
+                {
+                    EmployeeId = package.Employee.Id,
+                    EmployeeName = package.Employee.Name
+                },
                 Flights = package.Flights.Select(f => new FlightDto
                 {
                     FlightNumber = f.FlightNumber,

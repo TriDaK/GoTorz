@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public string EmployeeName { get; set; }
+        public EmployeeDto Employee { get; set; }
 
         public List<FlightDto> Flights { get; set; }
         public HotelWithRoomsDto Hotel { get; set; }
