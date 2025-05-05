@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Package_Api.Models;
 using Package_Api.DTOs;
+using Microsoft.Data.SqlClient;
+using Package_Api.Utility;
 
 namespace Package_Api.Controllers
 {
@@ -20,84 +22,102 @@ namespace Package_Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PackageResponseDto>>> GetPackages()
         {
-            var packages = await _context.Packages.Include(p => p.Employee).ToListAsync();
-            
-            var response = new List<PackageResponseDto>();
-
-            foreach (var package in packages)
+            try
             {
-                response.Add(
-                    new PackageResponseDto
-                    {
-                        Id = package.Id,
-                        Name = package.Name,
-                        Description = package.Description,
-                        Employee = new EmployeeDto
+                var packages = await _context.Packages.Include(p => p.Employee).ToListAsync();
+
+                var response = new List<PackageResponseDto>();
+
+                foreach (var package in packages)
+                {
+                    response.Add(
+                        new PackageResponseDto
                         {
-                            EmployeeId = package.Employee.Id,
-                            EmployeeName = package.Employee.Name
-                        }
-                    });
+                            Id = package.Id,
+                            Name = package.Name,
+                            Description = package.Description,
+                            Employee = new EmployeeDto
+                            {
+                                EmployeeId = package.Employee.Id,
+                                EmployeeName = package.Employee.Name
+                            }
+                        });
+                }
+
+                return Ok(response);
             }
 
-            return Ok(response);
+            catch (Exception ex)
+            {
+                // Logging should be here as well
+                return ResponseHelper.HandleDatabaseError(ex);
+            }
         }
 
         // GET: api/package/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PackageResponseDto>> GetPackage(int id)
         {
-            var package = await _context.Packages
-                .Include(p => p.Flights)
-                .Include(p => p.AvailableRooms)
-                    .ThenInclude(r => r.Hotel)
-                .Include(p => p.Pictures)
-                .Include(p => p.Employee)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (package == null)
-                return NotFound("Package not found");
-
-            // Sort rooms into their hotel
-            var hotelRooms = package.AvailableRooms
-                .GroupBy(r => r.Hotel)
-                .First();
-
-            var response = new PackageResponseDto
+            try
             {
-                Id = package.Id,
-                Name = package.Name,
-                Description = package.Description,
-                Employee = new EmployeeDto
-                {
-                    EmployeeId = package.Employee.Id,
-                    EmployeeName = package.Employee.Name
-                },
-                Flights = package.Flights.Select(f => new FlightDto
-                {
-                    FlightNumber = f.FlightNumber,
-                    Departure = f.Departure
-                }).ToList(),
-                Hotel = new HotelWithRoomsDto
-                {
-                    Phone = hotelRooms.Key?.Phone,
-                    Rooms = hotelRooms.Select(r => new RoomDto
-                    {
-                        RoomCapacity = r.RoomCapacity,
-                        RoomType = r.RoomType,
-                        CheckIn = r.CheckIn,
-                        CheckOut = r.CheckOut
-                    }).ToList()
-                },
-                //Pictures = package.Pictures?.Select(pic => new PictureDto
-                //{
-                //    Id = pic.Id,
-                //    ImageBytes = pic.ImageBytes
-                //}).ToList()
-                Pictures = new List<PictureDto>()
-            };
+                var package = await _context.Packages
+                    .Include(p => p.Flights)
+                    .Include(p => p.AvailableRooms)
+                        .ThenInclude(r => r.Hotel)
+                    .Include(p => p.Pictures)
+                    .Include(p => p.Employee)
+                    .FirstOrDefaultAsync(p => p.Id == id);
 
-            return Ok(response);
+                if (package == null)
+                    return NotFound("Package not found");
+
+                // Sort rooms into their hotel
+                var hotelRooms = package.AvailableRooms
+                    .GroupBy(r => r.Hotel)
+                    .First();
+
+                var response = new PackageResponseDto
+                {
+                    Id = package.Id,
+                    Name = package.Name,
+                    Description = package.Description,
+                    Employee = new EmployeeDto
+                    {
+                        EmployeeId = package.Employee.Id,
+                        EmployeeName = package.Employee.Name
+                    },
+                    Flights = package.Flights.Select(f => new FlightDto
+                    {
+                        FlightNumber = f.FlightNumber,
+                        Departure = f.Departure
+                    }).ToList(),
+                    Hotel = new HotelWithRoomsDto
+                    {
+                        Phone = hotelRooms.Key?.Phone,
+                        Rooms = hotelRooms.Select(r => new RoomDto
+                        {
+                            RoomCapacity = r.RoomCapacity,
+                            RoomType = r.RoomType,
+                            CheckIn = r.CheckIn,
+                            CheckOut = r.CheckOut
+                        }).ToList()
+                    },
+                    //Pictures = package.Pictures?.Select(pic => new PictureDto
+                    //{
+                    //    Id = pic.Id,
+                    //    ImageBytes = pic.ImageBytes
+                    //}).ToList()
+                    Pictures = new List<PictureDto>()
+                };
+
+                return Ok(response);
+            }
+
+            catch (Exception ex)
+            {
+                // Logging should be here as well
+                return ResponseHelper.HandleDatabaseError(ex);
+            }
         }
 
         // POST: api/package
@@ -105,6 +125,8 @@ namespace Package_Api.Controllers
         public async Task<ActionResult<Package>> PostPackage
             ([FromBody] PackageCreateRequest request)
         {
+            try
+            {
             // Request body
             var flights = request.Flights;
             var rooms = request.Rooms;
@@ -168,6 +190,13 @@ namespace Package_Api.Controllers
                 Message = "Package created successfully",
                 package.Id
             });
+            }
+
+            catch (Exception ex)
+            {
+                // Logging should be here as well
+                return ResponseHelper.HandleDatabaseError(ex);
+            }
         }
 
         // PUT: api/package/5
