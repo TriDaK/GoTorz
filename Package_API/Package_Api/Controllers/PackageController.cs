@@ -5,11 +5,13 @@ using Package_Api.Models;
 using Package_Api.DTOs;
 using Microsoft.Data.SqlClient;
 using Package_Api.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Package_Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PackageController : ControllerBase
     {
         private readonly AppDbContext _context;

@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Package_Api.Models;
 using Package_Api.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Package_Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EmployeeController : ControllerBase
     {
         private readonly AppDbContext _context;
