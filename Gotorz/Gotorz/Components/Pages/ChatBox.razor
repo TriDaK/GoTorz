@@ -1,0 +1,61 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Gotorz.Models
+@rendermode InteractiveServer
+
+@inject NavigationManager NavigationManager
+
+@*Chat box for traveler to traveler chat*@
+
+<div>
+    <ul>
+        @foreach (var msg in messages)
+        {
+            <b>@msg.User</b> <small>@msg.Timestamp.ToString("dd:MM:yyyy , HH:mm:ss")</small>
+            @msg.Message
+        }
+    </ul>
+
+    <input @bind="user" placeholder="Name"/>
+    <input @bind="message" placeholder="Type message..."/>
+    <button @onclick="SendMessage">Send</button>
+</div>
+
+@code {
+    [Parameter]
+    public int? PackageId { get; set; } // The PackageId is getting set whene /chat is calling <ChatBox PackageId="@SelectedPackageId"/>
+
+    private List<ChatMessage> messages = new();
+
+    private string user = string.Empty;
+    private string message = string.Empty;
+
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync() // on startup of this page
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/packageChatHub")).Build();
+
+        hubConnection.On<string, string>("ReceiveMessage", (username, msgText) =>
+        {
+            messages.Add(new ChatMessage
+                {
+                    User = username,
+                    Message = msgText,
+                    Timestamp = DateTime.Now
+                });
+            StateHasChanged(); // the page rerenders and shows the change
+        });
+
+        await hubConnection.StartAsync();
+        await hubConnection.InvokeAsync("JoinRoom", PackageId?.ToString());
+    }
+
+    private async Task SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(user) && !string.IsNullOrWhiteSpace(user))
+        {
+            await Task.CompletedTask; ///////////// placeholder
+        }
+    }
+}

@@ -1,5 +1,6 @@
 using Gotorz.Components;
 using Gotorz.Components.Pages;
+using Gotorz.Hubs;
 using Gotorz.Services;
 
 namespace Gotorz;
@@ -15,6 +16,9 @@ public class Program
             .AddInteractiveServerComponents();
         builder.Services.AddHttpClient(); // for the API call
         builder.Services.AddScoped<FlightService>();
+        builder.Services.AddScoped<PackageService>();
+
+        builder.Services.AddSignalR(); // SignalR for chat functions 
 
         var app = builder.Build(); 
 
@@ -31,8 +35,9 @@ public class Program
         app.UseStaticFiles();
         app.UseAntiforgery();
 
-        app.MapRazorComponents<App>()
-            .AddInteractiveServerRenderMode();
+        app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+
+        app.MapHub<PackageChatHub>("/packageChatHub");
 
         app.Run();
     }

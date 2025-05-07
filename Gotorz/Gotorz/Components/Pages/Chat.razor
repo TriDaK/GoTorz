@@ -1,0 +1,50 @@
+﻿@page "/chat"
+@using Gotorz.Models
+@using Gotorz.Services
+@rendermode InteractiveServer
+
+@inject PackageService PackageService
+
+@*Page for travelers attending the same travelpackage to chat with eachother*@
+<h3>Traveler to traveler chat</h3>
+
+<div style="display: flex;">
+    <!--List of packages-->
+    <div style="width: 30%; border-right: 1 px solid #ccc; padding-right: 10px;">
+        <h4>Choose a travelpackage:</h4>
+        <ul>
+            @foreach (var p in packages)
+            {
+                <li>
+                    <button @onclick="@(() => SelectPackage(p.Id))">
+                        @p.Name
+                    </button>
+                </li>
+            }
+        </ul>
+
+    </div>
+
+    <!--Chat window-->
+    <div style="width: 70%">
+        @if (SelectedPackageId != null)
+        {
+            <ChatBox PackageId="@SelectedPackageId"/>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Package> packages = new(); // List  of all packages on DB
+    private int? SelectedPackageId;
+
+    protected override async Task OnInitializedAsync() // what needs to be done on loading the page
+    {
+        packages = await PackageService.GetAllPackages();
+    }
+
+    private void SelectPackage(int id)
+    {
+        SelectedPackageId = id;
+    }
+}
