@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
  **********************************/
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-{
+{   // Handles password requirements
     options.User.RequireUniqueEmail = true;
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
@@ -24,11 +24,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
   .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
-{
+{   // Sets scheme to bearer/JWT
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
-{
+{   // Sets token validation parameters
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateActor = true,

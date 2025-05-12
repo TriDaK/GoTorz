@@ -47,7 +47,6 @@ namespace Package_Api.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Username),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
             };
 
             var securityKey = new SymmetricSecurityKey

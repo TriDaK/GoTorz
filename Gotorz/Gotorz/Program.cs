@@ -15,6 +15,7 @@ public class Program
             .AddInteractiveServerComponents();
         builder.Services.AddHttpClient(); // for the API call
         builder.Services.AddScoped<FlightService>();
+        builder.Services.AddScoped<LoginService>();
 
         var app = builder.Build(); 
 

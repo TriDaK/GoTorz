@@ -1,0 +1,54 @@
+﻿@page "/login"
+@using Gotorz.Models
+@using Gotorz.Services
+@rendermode InteractiveServer
+
+@inject LoginService LoginService
+
+<h3>Search for Flights</h3>
+
+@*Flight found by destination and time*@
+By destination and time 
+<br />
+@*Search fields*@
+<div>
+    <p>Email </p>
+    <input @bind="email" placeholder="email@provider.abc" />
+    <br />
+    <p>Password </p>
+    <input @bind="password" placeholder="p@sSw0rD" />
+</div>
+<br />
+@if (feedback != null)
+{
+    <div class="alert alert-danger">
+        @feedback
+    </div>
+})
+
+
+
+@code {
+    private string error = null;
+    private string feedback = null;
+    // Fields for login information
+    private string email = null;
+    private string password = null;
+    // Actual login object
+    private UserLogin userLogin = null;
+
+    private async Task AttemptLogin() // both outbound and return flights in one
+    {
+        try
+        {
+            userLogin = await LoginService.AttemptLoginAsync(email, password);
+            feedback = "Login successful!";
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            feedback = "Login failed!";
+        }
+    }
+
+}
