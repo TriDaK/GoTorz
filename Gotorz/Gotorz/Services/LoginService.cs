@@ -16,7 +16,7 @@ namespace Gotorz.Services
             _httpClient = httpClient;
         }
 
-        public async Task AttemptLoginAsync(string email, string password)
+        public async Task<UserLogin> AttemptLoginAsync(string email, string password)
         {
             string url = "https://localhost:5001/api/Auth/Login";
             var userLogin = new UserLogin
@@ -33,14 +33,15 @@ namespace Gotorz.Services
                 {
                     // Handle successful login
                     var result = await response.Content.ReadFromJsonAsync<UserLogin>();
-                    await 
-
+                    //await 
+                    return result;
                 }
                 else
                 {
                     // Handle failed login
                     var errorMessage = await response.Content.ReadAsStringAsync();
                     // Show error message to the user
+                    return null;
                 }
             }
             catch
