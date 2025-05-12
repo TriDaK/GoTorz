@@ -22,7 +22,7 @@
 
 @code {
     [Parameter]
-    public int? PackageId { get; set; } // The PackageId is getting set whene /chat is calling <ChatBox PackageId="@SelectedPackageId"/>
+    public string? PackageId { get; set; } // The PackageId is getting set whene /chat is calling <ChatBox PackageId="@SelectedPackageId"/>
 
     private List<ChatMessage> messages = new();
 
@@ -48,7 +48,7 @@
         });
 
         await hubConnection.StartAsync();
-        await hubConnection.InvokeAsync("JoinRoom", PackageId?.ToString());
+        await hubConnection.InvokeAsync("JoinRoom", PackageId);
     }
 
     private async Task SendMessage()

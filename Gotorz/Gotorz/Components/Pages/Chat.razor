@@ -1,12 +1,16 @@
 ﻿@page "/chat"
+@rendermode InteractiveServer
 @using Gotorz.Models
 @using Gotorz.Services
-@rendermode InteractiveServer
+
 
 @inject PackageService PackageService
 
 @*Page for travelers attending the same travelpackage to chat with eachother*@
 <h3>Traveler to traveler chat</h3>
+
+<button @onclick="() => counter++">Test click: @counter</button>
+
 
 <div style="display: flex;">
     <!--List of packages-->
@@ -27,8 +31,12 @@
 
     <!--Chat window-->
     <div style="width: 70%">
-        @if (SelectedPackageId != null)
+
+        <p>Chatbox skal være her UDEN ID </p>
+
+        @if (!string.IsNullOrEmpty(SelectedPackageId))
         {
+            <p>Chatbox skal være her med ID </p>
             <ChatBox PackageId="@SelectedPackageId"/>
         }
     </div>
@@ -36,7 +44,9 @@
 
 @code {
     private List<Package> packages = new(); // List  of all packages on DB
-    private int? SelectedPackageId;
+    private string? SelectedPackageId;
+
+    int counter = 0;
 
     protected override async Task OnInitializedAsync() // what needs to be done on loading the page
     {
@@ -45,6 +55,7 @@
 
     private void SelectPackage(int id)
     {
-        SelectedPackageId = id;
+        SelectedPackageId = id.ToString();
+        StateHasChanged();
     }
 }
