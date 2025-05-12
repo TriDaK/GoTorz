@@ -52,6 +52,5 @@ namespace Gotorz.Models
         // DB multiplicity ref
         [JsonPropertyName("hotelID")]
         public int HotelID { get; set; }
-
     }
 }

@@ -4,22 +4,20 @@
 @rendermode InteractiveServer
 
 @inject FlightService FlightService
+@inject HotelService HotelService
 
 <h3>Search for Flights</h3>
 
-@*Flight found by destination and time*@
-By destination and time 
-<br />
-@*Search fields*@
+@*Flight search fields*@
 <input @bind="from" placeholder="From" />
 <input @bind="to" placeholder="To" />
 <input @bind="outboundDate" type="date" />
 <input @bind="returnDate" type="date" />
-<br /> 
 <br />
-@*Search button*@
+<br />
+@*Flight search button*@
 <button @onclick="SearchFlights">Search</button>
-@*List of fligts*@
+@*List of flights*@
 <br />
 <br />
 <h3>Outbound flights: </h3>
@@ -50,7 +48,7 @@ By destination and time
         }
     </tbody>
 </table>
-<br/>
+<br />
 <h3>Return flights: </h3>
 <table>
     <thead>
@@ -80,8 +78,53 @@ By destination and time
     </tbody>
 </table>
 
+<h3>Search for Hotels</h3>
+
+@*Hotel search fields*@
+<input @bind="hotelCity" placeholder="City" />
+<input @bind="hotelCheckInDate" type="date" />
+<input @bind="hotelCheckOutDate" type="date" />
+<input @bind="hotelRating" type="number" placeholder="Rating" step="0.1" min="0" max="5" />
+<input @bind="hotelCapacity" type="number" placeholder="Capacity" />
+<input @bind="hotelRoomType" placeholder="Room Type" />
+<br />
+<br />
+@*Hotel search button*@
+<button @onclick="SearchHotels">Search Hotels</button>
+
+@*List of hotels*@
+<br />
+<br />
+<h3>Hotel Options: </h3>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Check-In Date</th>
+            <th>Check-Out Date</th>
+            <th>Rating</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hotel in hotels)
+        {
+            <tr>
+                <td>@hotel.Name</td>
+                <td>@hotel.StreetName @hotel.StreetNo, @hotel.Zipcode @hotel.City, @hotel.Country</td>
+                <td>@hotel.CheckIn.ToString("dd-MM-yyyy")</td>
+                <td>@hotel.CheckOut.ToString("dd-MM-yyyy")</td>
+                <td>@hotel.Rating</td>
+                <td>@hotel.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
 @code {
-    // for search by destination and date
+    // for flight search
     private string from = null;
     private string to = null;
     private DateTime? outboundDate = null;
@@ -89,13 +132,41 @@ By destination and time
     private List<Flight> outboundFlights = new();
     private List<Flight> returnFlights = new();
 
-    private async Task SearchFlights() // both outbound and return flights in one
+    private async Task SearchFlights()
     {
-        // list outbound flights for outbound date
         outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate);
-                
-        // list return flights for return date
         returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate);
+    }
+
+    // for hotel search
+    private string hotelCity = null;
+    private DateTime? hotelCheckInDate = null;
+    private DateTime? hotelCheckOutDate = null;
+    private double? hotelRating = null;
+    private int? hotelCapacity = null;
+    private string hotelRoomType = null;
+    private List<Hotel> hotels = new();
+
+    private async Task SearchHotels()
+    {
+        try
+        {
+            Console.WriteLine($"Searching for hotels in {hotelCity}...");
+
+            hotels = await HotelService.SearchHotelsAsync(
+                hotelCity,
+                hotelCheckInDate,
+                hotelCheckOutDate,
+                hotelRating,
+                hotelCapacity,
+                hotelRoomType);
+
+            Console.WriteLine($"Found {hotels.Count} hotels.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
     }
 
 }

@@ -22,7 +22,7 @@ public class HotelService
         int? capacity,
         string? roomType)
     {
-        string url = "https://localhost:5001/api/Hotel?";
+        string url = "https://localhost:5001/api/Rooms?";
 
         if (!string.IsNullOrWhiteSpace(city))
         {
@@ -57,10 +57,22 @@ public class HotelService
 
         try
         {
-            return await _httpClient.GetFromJsonAsync<List<Hotel>>(url) ?? new List<Hotel>();
+            Console.WriteLine($"Making request to: {url}");
+
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Response: {responseBody}");
+
+            var hotels = await _httpClient.GetFromJsonAsync<List<Hotel>>(url) ?? new List<Hotel>();
+            Console.WriteLine($"Found {hotels.Count} hotels.");
+
+            return hotels;
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine($"An error occurred: {ex.Message}");
             return new List<Hotel>(); // Return a blank list in case of an error
         }
     }

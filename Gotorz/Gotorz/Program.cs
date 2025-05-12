@@ -15,8 +15,9 @@ public class Program
             .AddInteractiveServerComponents();
         builder.Services.AddHttpClient(); // for the API call
         builder.Services.AddScoped<FlightService>();
+        builder.Services.AddScoped<HotelService>(); // Register the HotelService
 
-        var app = builder.Build(); 
+        var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
