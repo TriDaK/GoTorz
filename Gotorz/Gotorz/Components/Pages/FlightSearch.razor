@@ -22,9 +22,10 @@
 <br />
 <br />
 <h3>Outbound flights: </h3>
-<table>
+<table class="table">
     <thead>
         <tr>
+            <th>Select</th>
             <th>Destination From</th>
             <th>Destination To</th>
             <th>Departure Date</th>
@@ -32,13 +33,14 @@
             <th>Arrival Date</th>
             <th>Arrival Time</th>
             <th>Flight Number</th>
-            <th>Select</th>
+            <th>Price</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var flight in outboundFlights)
         {
             <tr>
+                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectFlight(flight))" /></td>
                 <td>@flight.DestinationFrom</td>
                 <td>@flight.DestinationTo</td>
                 <td>@flight.TimeDeparture.ToString("dd-MM-yyyy")</td>
@@ -46,16 +48,17 @@
                 <td>@flight.TimeArrival.ToString("dd-MM-yyyy")</td>
                 <td>@flight.TimeArrival.ToString("HH:mm")</td>
                 <td>@flight.FlightNumber</td>
-                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectFlight(flight))" /></td>
+                <td>@flight.Price</td>
             </tr>
         }
     </tbody>
 </table>
 <br />
 <h3>Return flights: </h3>
-<table>
+<table class="table">
     <thead>
         <tr>
+            <th>Select</th>
             <th>Destination From</th>
             <th>Destination To</th>
             <th>Departure Date</th>
@@ -63,13 +66,14 @@
             <th>Arrival Date</th>
             <th>Arrival Time</th>
             <th>Flight Number</th>
-            <th>Select</th>
+            <th>Price</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var flight in returnFlights)
         {
             <tr>
+                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectFlight(flight))" /></td>
                 <td>@flight.DestinationFrom</td>
                 <td>@flight.DestinationTo</td>
                 <td>@flight.TimeDeparture.ToString("dd-MM-yyyy")</td>
@@ -77,7 +81,7 @@
                 <td>@flight.TimeArrival.ToString("dd-MM-yyyy")</td>
                 <td>@flight.TimeArrival.ToString("HH:mm")</td>
                 <td>@flight.FlightNumber</td>
-                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectFlight(flight))" /></td>
+                <td>@flight.Price</td>
             </tr>
         }
     </tbody>
@@ -101,33 +105,41 @@
 <br />
 <br />
 <h3>Hotel Options: </h3>
-<table>
+<table class="table">
     <thead>
         <tr>
+            <th>Select</th>
             <th>Name</th>
             <th>Address</th>
             <th>Check-In Date</th>
             <th>Check-Out Date</th>
             <th>Rating</th>
             <th>Price</th>
-            <th>Select</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var hotel in hotels)
         {
             <tr>
+                <td><input type="radio" @bind="hotel.IsSelected" @onclick="@(() => SelectHotel(hotel))" /></td>
                 <td>@hotel.Name</td>
                 <td>@hotel.StreetName @hotel.StreetNo, @hotel.Zipcode @hotel.City, @hotel.Country</td>
                 <td>@hotel.CheckIn.ToString("dd-MM-yyyy")</td>
                 <td>@hotel.CheckOut.ToString("dd-MM-yyyy")</td>
                 <td>@hotel.Rating</td>
                 <td>@hotel.Price</td>
-                <td><input type="radio" @bind="hotel.IsSelected" @onclick="@(() => SelectHotel(hotel))" /></td>
             </tr>
         }
     </tbody>
 </table>
+
+@*Package Name and Description*@
+<br />
+<br />
+<input @bind="packageName" placeholder="Package Name" />
+<br />
+<br />
+<textarea @bind="packageDescription" placeholder="Package Description"></textarea>
 
 @*Create Travel Package*@
 <br />
@@ -138,9 +150,11 @@
 <br />
 <br />
 <h3>Travel Package: </h3>
-<table>
+<table class="table">
     <thead>
         <tr>
+            <th>Package Name</th>
+            <th>Description</th>
             <th>Flight Number</th>
             <th>Hotel Name</th>
             <th>Total Price</th>
@@ -150,8 +164,10 @@
         @if (travelPackage != null)
         {
             <tr>
-                <td>@travelPackage.SelectedFlight.FlightNumber</td>
-                <td>@travelPackage.SelectedHotel.Name</td>
+                <td>@travelPackage.Name</td>
+                <td>@travelPackage.Description</td>
+                <td>@travelPackage.SelectedFlight?.FlightNumber</td>
+                <td>@travelPackage.SelectedHotel?.Name</td>
                 <td>@travelPackage.TotalPrice</td>
             </tr>
         }
@@ -160,13 +176,13 @@
 
 @code {
     // for flight search
-    private string from = null;
-    private string to = null;
+    private string from = string.Empty;
+    private string to = string.Empty;
     private DateTime? outboundDate = null;
     private DateTime? returnDate = null;
     private List<Flight> outboundFlights = new();
     private List<Flight> returnFlights = new();
-    private Flight selectedFlight = null;
+    private Flight? selectedFlight = null;
 
     private async Task SearchFlights()
     {
@@ -180,14 +196,14 @@
     }
 
     // for hotel search
-    private string hotelCity = null;
+    private string hotelCity = string.Empty;
     private DateTime? hotelCheckInDate = null;
     private DateTime? hotelCheckOutDate = null;
     private double? hotelRating = null;
     private int? hotelCapacity = null;
-    private string hotelRoomType = null;
+    private string hotelRoomType = string.Empty;
     private List<Hotel> hotels = new();
-    private Hotel selectedHotel = null;
+    private Hotel? selectedHotel = null;
 
     private async Task SearchHotels()
     {
@@ -206,13 +222,15 @@
     }
 
     // for travel package
-    private TravelPackage travelPackage = null;
+    private string packageName = string.Empty;
+    private string packageDescription = string.Empty;
+    private TravelPackage? travelPackage = null;
 
     private void CreateTravelPackage()
     {
         if (selectedFlight != null && selectedHotel != null)
         {
-            travelPackage = TravelPackageService.CreateTravelPackage(selectedFlight, selectedHotel);
+            travelPackage = TravelPackageService.CreateTravelPackage(packageName, packageDescription, selectedFlight, selectedHotel);
         }
     }
 }
