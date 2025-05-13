@@ -22,7 +22,7 @@ public class HotelService
         int? capacity,
         string? roomType)
     {
-        string url = "https://localhost:5001/api/Rooms?";
+        string url = "https://localhost:5002/api/Rooms?";
 
         if (!string.IsNullOrWhiteSpace(city))
         {

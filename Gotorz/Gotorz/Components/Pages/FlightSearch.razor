@@ -5,6 +5,7 @@
 
 @inject FlightService FlightService
 @inject HotelService HotelService
+@inject TravelPackageService TravelPackageService
 
 <h3>Search for Flights</h3>
 
@@ -31,6 +32,7 @@
             <th>Arrival Date</th>
             <th>Arrival Time</th>
             <th>Flight Number</th>
+            <th>Select</th>
         </tr>
     </thead>
     <tbody>
@@ -44,6 +46,7 @@
                 <td>@flight.TimeArrival.ToString("dd-MM-yyyy")</td>
                 <td>@flight.TimeArrival.ToString("HH:mm")</td>
                 <td>@flight.FlightNumber</td>
+                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectFlight(flight))" /></td>
             </tr>
         }
     </tbody>
@@ -60,6 +63,7 @@
             <th>Arrival Date</th>
             <th>Arrival Time</th>
             <th>Flight Number</th>
+            <th>Select</th>
         </tr>
     </thead>
     <tbody>
@@ -73,6 +77,7 @@
                 <td>@flight.TimeArrival.ToString("dd-MM-yyyy")</td>
                 <td>@flight.TimeArrival.ToString("HH:mm")</td>
                 <td>@flight.FlightNumber</td>
+                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectFlight(flight))" /></td>
             </tr>
         }
     </tbody>
@@ -105,6 +110,7 @@
             <th>Check-Out Date</th>
             <th>Rating</th>
             <th>Price</th>
+            <th>Select</th>
         </tr>
     </thead>
     <tbody>
@@ -117,11 +123,40 @@
                 <td>@hotel.CheckOut.ToString("dd-MM-yyyy")</td>
                 <td>@hotel.Rating</td>
                 <td>@hotel.Price</td>
+                <td><input type="radio" @bind="hotel.IsSelected" @onclick="@(() => SelectHotel(hotel))" /></td>
             </tr>
         }
     </tbody>
 </table>
 
+@*Create Travel Package*@
+<br />
+<br />
+<button @onclick="CreateTravelPackage">Create Travel Package</button>
+
+@*Travel Package*@
+<br />
+<br />
+<h3>Travel Package: </h3>
+<table>
+    <thead>
+        <tr>
+            <th>Flight Number</th>
+            <th>Hotel Name</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (travelPackage != null)
+        {
+            <tr>
+                <td>@travelPackage.SelectedFlight.FlightNumber</td>
+                <td>@travelPackage.SelectedHotel.Name</td>
+                <td>@travelPackage.TotalPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @code {
     // for flight search
@@ -131,11 +166,17 @@
     private DateTime? returnDate = null;
     private List<Flight> outboundFlights = new();
     private List<Flight> returnFlights = new();
+    private Flight selectedFlight = null;
 
     private async Task SearchFlights()
     {
         outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate);
         returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate);
+    }
+
+    private void SelectFlight(Flight flight)
+    {
+        selectedFlight = flight;
     }
 
     // for hotel search
@@ -146,27 +187,32 @@
     private int? hotelCapacity = null;
     private string hotelRoomType = null;
     private List<Hotel> hotels = new();
+    private Hotel selectedHotel = null;
 
     private async Task SearchHotels()
     {
-        try
-        {
-            Console.WriteLine($"Searching for hotels in {hotelCity}...");
-
-            hotels = await HotelService.SearchHotelsAsync(
-                hotelCity,
-                hotelCheckInDate,
-                hotelCheckOutDate,
-                hotelRating,
-                hotelCapacity,
-                hotelRoomType);
-
-            Console.WriteLine($"Found {hotels.Count} hotels.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
+        hotels = await HotelService.SearchHotelsAsync(
+            hotelCity,
+            hotelCheckInDate,
+            hotelCheckOutDate,
+            hotelRating,
+            hotelCapacity,
+            hotelRoomType);
     }
 
+    private void SelectHotel(Hotel hotel)
+    {
+        selectedHotel = hotel;
+    }
+
+    // for travel package
+    private TravelPackage travelPackage = null;
+
+    private void CreateTravelPackage()
+    {
+        if (selectedFlight != null && selectedHotel != null)
+        {
+            travelPackage = TravelPackageService.CreateTravelPackage(selectedFlight, selectedHotel);
+        }
+    }
 }

@@ -28,6 +28,7 @@ namespace Gotorz.Models
         public int AvailableSeats { get; set; } // Comes from API, but shall not be saved to the DB
         [JsonPropertyName("price")]
         public int Price { get; set; }
+        public bool IsSelected { get; set; }
 
     }
 }

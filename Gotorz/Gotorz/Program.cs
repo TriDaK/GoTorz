@@ -16,6 +16,7 @@ public class Program
         builder.Services.AddHttpClient(); // for the API call
         builder.Services.AddScoped<FlightService>();
         builder.Services.AddScoped<HotelService>(); // Register the HotelService
+        builder.Services.AddScoped<TravelPackageService>();
 
         var app = builder.Build();
 
