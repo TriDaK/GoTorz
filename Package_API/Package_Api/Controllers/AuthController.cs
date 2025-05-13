@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Package_Api.Models.Login;
 using Package_Api.Services;
 
@@ -40,9 +36,16 @@ namespace Package_Api.Controllers
             if (await _authService.Login(user))
             {
                 var tokenString = _authService.GenerateTokenString(user);
-                return Ok("Login successful! Your token is:\n" + tokenString);
+                return Ok(tokenString);
             }
             return BadRequest();
+        }
+
+        [HttpGet("HitMe")]
+        [Authorize]
+        public async Task<string> HitMe()
+        {
+            return "API has responded";
         }
     }
 }

@@ -1,54 +1,46 @@
 ﻿@page "/login"
-@using Gotorz.Models
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using System.ComponentModel.DataAnnotations
 @using Gotorz.Services
+@inject ITokenService TokenService
 @rendermode InteractiveServer
 
-@inject LoginService LoginService
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="LoginForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-<h3>Search for Flights</h3>
-
-@*Flight found by destination and time*@
-By destination and time 
+    <InputText @bind-Value="loginModel.Username" placeholder="Email" />
+    <InputText type="password" @bind-Value="loginModel.Password"  placeholder="Password"/>
+    <button type="submit">Log in</button>
+</EditForm>
 <br />
-@*Search fields*@
-<div>
-    <p>Email </p>
-    <input @bind="email" placeholder="email@provider.abc" />
-    <br />
-    <p>Password </p>
-    <input @bind="password" placeholder="p@sSw0rD" />
-</div>
-<br />
-@if (feedback != null)
-{
-    <div class="alert alert-danger">
-        @feedback
-    </div>
-})
-
-
+<p>Username: @loginModel.Username</p>
+<p>Password: @loginModel.Password</p>
 
 @code {
-    private string error = null;
-    private string feedback = null;
-    // Fields for login information
-    private string email = null;
-    private string password = null;
-    // Actual login object
-    private UserLogin userLogin = null;
+    private LoginModel loginModel = new();
 
-    private async Task AttemptLogin() // both outbound and return flights in one
+    private async Task HandleLogin()
     {
-        try
+        var response = await Http.PostAsJsonAsync("https://localhost:7039/api/Auth/Login", loginModel);
+        if (response.IsSuccessStatusCode)
         {
-            userLogin = await LoginService.AttemptLoginAsync(email, password);
-            feedback = "Login successful!";
-        }
-        catch (Exception ex)
-        {
-            error = ex.Message;
-            feedback = "Caught exception! Grab a programmer!";
+            var token = await response.Content.ReadAsStringAsync();
+            await TokenService.StoreTokenAsync(token);  // Currently session storage
+            Http.DefaultRequestHeaders.Clear();
+            Http.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            Navigation.NavigateTo("/checklogin");
         }
     }
 
+    public class LoginModel
+    {
+        [Required]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+        public string Username { get; set; }
+        [Required]
+        public string Password { get; set; }
+    }
 }

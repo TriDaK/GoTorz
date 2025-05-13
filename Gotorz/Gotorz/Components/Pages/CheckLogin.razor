@@ -1,0 +1,78 @@
+﻿@page "/checklogin"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using System.ComponentModel.DataAnnotations
+@using Gotorz.Services
+@inject ITokenService TokenService
+@rendermode InteractiveServer
+
+<h3>CheckLogin</h3>
+
+<div>
+    <p>
+        <button @onclick="AmILoggedIn">Am I logged in?</button>
+    </p>
+    <p>
+        @if (!string.IsNullOrEmpty(token))
+        {
+            <p>Token: @token</p>
+        }
+        @if (!string.IsNullOrEmpty(header))
+        {
+            <p>Header: @header</p>
+        }
+        @if (!string.IsNullOrEmpty(response))
+        {
+            <p>Response: @response</p>
+        }
+        @if (errors.Count() > 0)
+        {
+            foreach (string error in errors)
+            {
+                <p>Error: @error</p>
+            }
+        }
+    </p>
+</div>
+
+@code {
+    private string token = string.Empty;
+    private string response = string.Empty;
+    private string header = string.Empty;
+    private List<string> errors = new();
+
+    private async Task AmILoggedIn()
+    {
+        string baseUrl = "https://localhost:7039/api/";
+        try
+        {
+            token = await TokenService.GetTokenAsync(); 
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                Http.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                header = Http.DefaultRequestHeaders.Authorization.ToString();
+
+                var result = await Http.GetAsync("https://localhost:7039/api/Auth/HitMe");
+
+                if (result.IsSuccessStatusCode)
+                {
+                    response = await result.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    response = $"Request failed: {result.StatusCode}";
+                }
+            }
+            else
+            {
+                header = "No token available.";
+            }
+        }
+        catch (Exception e)
+        {
+            errors.Add(e.ToString());
+        }
+    }
+}

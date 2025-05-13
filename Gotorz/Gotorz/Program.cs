@@ -1,6 +1,8 @@
+using Blazored.SessionStorage;
 using Gotorz.Components;
 using Gotorz.Components.Pages;
 using Gotorz.Services;
+using Gotorz.Services.Http;
 
 namespace Gotorz;
 
@@ -16,6 +18,12 @@ public class Program
         builder.Services.AddHttpClient(); // for the API call
         builder.Services.AddScoped<FlightService>();
         builder.Services.AddScoped<LoginService>();
+        // Auth service setup
+        builder.Services.AddScoped<ITokenService, SessionStorageTokenService>();
+        builder.Services.AddHttpClient("AuthorizedAPI", client => {
+            client.BaseAddress = new Uri("https://localhost:7039"); // Uri to match AuthAPI
+        }).AddHttpMessageHandler<AuthorizationMessageHandler>();
+        builder.Services.AddBlazoredSessionStorage();
 
         var app = builder.Build(); 
 
