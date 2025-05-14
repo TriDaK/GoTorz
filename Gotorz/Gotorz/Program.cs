@@ -1,6 +1,8 @@
 using Gotorz.Components;
 using Gotorz.Components.Pages;
+using Gotorz.Hubs;
 using Gotorz.Services;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace Gotorz;
 
@@ -15,6 +17,10 @@ public class Program
             .AddInteractiveServerComponents();
         builder.Services.AddHttpClient(); // for the API call
         builder.Services.AddScoped<FlightService>();
+        builder.Services.AddResponseCompression(options => ////////////////////////////////////////////////////////////////////////////////
+        {
+            options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }); // comprimantes what is sent to and from the server
+        });
 
         var app = builder.Build(); 
 
@@ -30,6 +36,8 @@ public class Program
 
         app.UseStaticFiles();
         app.UseAntiforgery();
+
+        app.MapHub<ChatHub>("/chathub"); ///////////////////////////////////////////////////////////////////////////////
 
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
