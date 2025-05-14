@@ -1,0 +1,74 @@
+﻿@page "/packages"
+@using Gotorz.Models
+@using Gotorz.Services
+@rendermode InteractiveServer
+
+@inject IPackageService PackageService
+
+<h3>Overview of package</h3>
+
+<div class="row">
+    <div class="col-md-4">
+        <h4>Search</h4>
+        <EditForm Model="@this" OnValidSubmit="@SearchPackagesAsync" FormName="PackageSearchForm">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="mb-3">
+                <label for="destination" class="form-label">Destination</label>
+                <InputText id="destination" @bind-Value="@destination" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <InputDate id="date" @bind-Value="@date" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </EditForm>
+    </div>
+    <div class="col-md-8">
+        @if (packages != null && packages.Count > 0)
+        {
+            <h4>Available Packages</h4>
+            @foreach (var package in packages)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">@package.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@package.Description</h6>
+                        <p class="card-text">Date: @package.Flights.First().TimeDeparture.ToString("dd/MM/yy")</p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No packages found.</p>
+        }
+    </div>
+</div>
+
+@*  TO DO LIST
+    - Search by destination and date    *@
+@code {
+    // Inits
+    private List<Package> packages = new();
+
+    // Search options
+    private string destination = null;
+    private DateOnly date = DateOnly.FromDateTime(DateTime.Now);
+
+    // "Constructor"
+    protected override async Task OnInitializedAsync()
+    {
+        await SearchPackagesAsync();
+    }
+
+    // Method calls
+    private async Task SearchPackagesAsync()
+    {
+        if (string.IsNullOrEmpty(destination) && date == DateOnly.FromDateTime(DateTime.Now))
+            packages = await PackageService.GetAllPackagesAsync();
+        else
+            packages = await PackageService.SearchPackagesAsync(destination, date);
+    }
+
+}

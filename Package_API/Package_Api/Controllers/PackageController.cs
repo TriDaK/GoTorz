@@ -24,7 +24,10 @@ namespace Package_Api.Controllers
         {
             try
             {
-                var packages = await _context.Packages.Include(p => p.Employee).ToListAsync();
+                var packages = await _context.Packages
+                    .Include(p => p.Employee)
+                    .Include(p => p.Flights)
+                    .ToListAsync();
 
                 var response = new List<PackageResponseDto>();
 
@@ -40,7 +43,11 @@ namespace Package_Api.Controllers
                             {
                                 EmployeeId = package.Employee.Id,
                                 EmployeeName = package.Employee.Name
-                            }
+                            },
+                            Flights = package.Flights.Select(f => new FlightDto
+                            {
+                                Departure = f.Departure,
+                            }).ToList()
                         });
                 }
 
