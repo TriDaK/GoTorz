@@ -1,5 +1,5 @@
-packageAPI - localhost:7039
-bookingAPI - localhost:....
-hotelAPI - localhost:7277
+packageAPI - localhost:5003
+bookingAPI - localhost:5004
+hotelAPI - localhost:5002
 flightAPI - localhost:5001
-GoTorz - localhost:7107
+GoTorz - localhost:5000
