@@ -1,11 +1,12 @@
 ﻿@page "/flightsearch"
+@using Gotorz.Models.PackageDTOs
 @using Gotorz.Models
 @using Gotorz.Services
 @rendermode InteractiveServer
 
 @inject FlightService FlightService
 @inject HotelService HotelService
-@inject TravelPackageService TravelPackageService
+@inject PackageService PackageService
 
 <h3>Search for Flights</h3>
 
@@ -141,15 +142,15 @@
 <br />
 <textarea @bind="packageDescription" placeholder="Package Description"></textarea>
 
-@*Create Travel Package*@
+@*Create Package*@
 <br />
 <br />
-<button @onclick="CreateTravelPackage">Create Travel Package</button>
+<button @onclick="CreatePackage">Create Package</button>
 
-@*Travel Package*@
+@*Package*@
 <br />
 <br />
-<h3>Travel Package: </h3>
+<h3>Package: </h3>
 <table class="table">
     <thead>
         <tr>
@@ -161,14 +162,14 @@
         </tr>
     </thead>
     <tbody>
-        @if (travelPackage != null)
+        @if (package != null)
         {
             <tr>
-                <td>@travelPackage.Name</td>
-                <td>@travelPackage.Description</td>
-                <td>@travelPackage.SelectedFlight?.FlightNumber</td>
-                <td>@travelPackage.SelectedHotel?.Name</td>
-                <td>@travelPackage.TotalPrice</td>
+                <td>@package.Name</td>
+                <td>@package.Description</td>
+                <td>@package.Flights[0].FlightNumber</td>
+                <td>@package.Hotel.Phone</td>
+                @* <td>@package.Price</td> *@
             </tr>
         }
     </tbody>
@@ -221,16 +222,32 @@
         selectedHotel = hotel;
     }
 
-    // for travel package
+    // for package
     private string packageName = string.Empty;
     private string packageDescription = string.Empty;
-    private TravelPackage? travelPackage = null;
-
-    private void CreateTravelPackage()
+    private PackageApiPackage package = null;
+    private List<Flight> selectedFlights = new();
+    private List<Hotel> selectedHotels = new ();
+    private async Task CreatePackage()
     {
+
+
         if (selectedFlight != null && selectedHotel != null)
         {
-            travelPackage = TravelPackageService.CreateTravelPackage(packageName, packageDescription, selectedFlight, selectedHotel);
+            selectedFlights.Clear();
+            selectedHotels.Clear();
+            selectedFlights.Add(selectedFlight);
+            selectedHotels.Add(selectedHotel);
+            package = PackageService.CreatePackage(packageName, packageDescription, selectedFlights, selectedHotels);
+            var response = await PackageService.CreatePackageAsync(package);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Package created successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to create package.");
+            }
         }
     }
 }

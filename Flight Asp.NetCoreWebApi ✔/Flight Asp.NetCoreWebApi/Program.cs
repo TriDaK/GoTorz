@@ -23,6 +23,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<FlightDbContext>(options =>
@@ -43,6 +44,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage(); // Enable detailed error pages
     app.MapScalarApiReference();
+    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
