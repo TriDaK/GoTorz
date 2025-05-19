@@ -21,7 +21,7 @@ namespace Gotorz.Services
             if (_hubConnection != null) return;
 
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://your-api-url/chathub") // TODO: Replace with actual API base URL
+                .WithUrl(_config["Urls:ChatApi"]) // Maybe needs to be handled differently?
                 .WithAutomaticReconnect()
                 .Build();
 
