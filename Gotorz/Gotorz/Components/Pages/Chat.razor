@@ -28,8 +28,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        PackageId = 5; // Dummy value for testing
-
         ChatService.OnMessageReceived += message =>
         {
             if (message.PackageId == PackageId)

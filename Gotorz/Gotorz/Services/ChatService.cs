@@ -19,9 +19,10 @@ namespace Gotorz.Services
         public async Task StartAsync(int packageId)
         {
             if (_hubConnection != null) return;
+            string hubUrl = $"{_config["Urls:ChatApi"]}chathub";
 
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl(_config["Urls:ChatApi"]) // Maybe needs to be handled differently?
+                .WithUrl(hubUrl) // Maybe needs to be handled differently?
                 .WithAutomaticReconnect()
                 .Build();
 
