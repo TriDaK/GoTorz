@@ -14,8 +14,12 @@
             <DataAnnotationsValidator />
             <ValidationSummary />
             <div class="mb-3">
-                <label for="destination" class="form-label">Destination</label>
-                <InputText id="destination" @bind-Value="@destination" class="form-control" />
+                <label for="destinationCity" class="form-label">Destination city</label>
+                <InputText id="destinationCity" @bind-Value="@destinationCity" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="destinationCountry" class="form-label">Destination country</label>
+                <InputText id="destinationCountry" @bind-Value="@destinationCountry" class="form-control" />
             </div>
             <div class="mb-3">
                 <label for="date" class="form-label">Date</label>
@@ -34,7 +38,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@package.Name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">@package.Description</h6>
-                        <p class="card-text">Date: @package.Flights.First().TimeDeparture.ToString("dd/MM/yy")</p>
+                        <p class="card-text">Date: @package.Flights.First().TimeDeparture.ToString("dd/MM/yy") to @package.Flights.Last().TimeDeparture.ToString("dd/MM/yy")</p>
                     </div>
                 </div>
             }
@@ -46,15 +50,15 @@
     </div>
 </div>
 
-@*  TO DO LIST
-    - Search by destination and date    *@
+
 @code {
     // Inits
     private List<Package> packages = new();
 
     // Search options
-    private string destination = null;
-    private DateOnly date = DateOnly.FromDateTime(DateTime.Now);
+    private string destinationCity = null;
+    private string destinationCountry = null;
+    private DateTime date = DateTime.Today;
 
     // "Constructor"
     protected override async Task OnInitializedAsync()
@@ -65,10 +69,13 @@
     // Method calls
     private async Task SearchPackagesAsync()
     {
-        if (string.IsNullOrEmpty(destination) && date == DateOnly.FromDateTime(DateTime.Now))
+        //packages.Clear();
+
+        if (string.IsNullOrEmpty(destinationCity) && string.IsNullOrEmpty(destinationCountry) && date == DateTime.Today)
             packages = await PackageService.GetAllPackagesAsync();
         else
-            packages = await PackageService.SearchPackagesAsync(destination, date);
+            packages = await PackageService.SearchPackagesAsync(destinationCity, destinationCountry, date); /*Når denne her kaldes med searchknappen
+                                                                                                                opdateres package ikke*/
     }
 
 }

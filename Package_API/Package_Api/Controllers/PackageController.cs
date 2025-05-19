@@ -61,6 +61,70 @@ namespace Package_Api.Controllers
             }
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<PackageResponseDto>>> GetPackagesByCriteria(
+            string city = null, string country = null, DateTime? date = null) ///// ADD DateTime later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        {
+            try
+            {
+                var basesQuery = _context.Packages.Include(p => p.Employee)
+                                                .Include(p => p.Flights)
+                                                .Include(p => p.AvailableRooms)
+                                                    .ThenInclude(r => r.Hotel);
+                IQueryable<Package> query = basesQuery;
+
+                // search filters based on incoming criterias 
+                if (!string.IsNullOrEmpty(city))
+                {
+                    query = query.Where(p => p.AvailableRooms.Any(r => r.Hotel.City.Contains(city)));
+                }
+                if (!string.IsNullOrEmpty(country))
+                {
+                    query = query.Where(p => p.AvailableRooms.Any(r => r.Hotel.Country.Contains(country)));
+                }
+                if (date.HasValue)
+                {
+                    var dateOnly = date.Value.Date;
+                    query = query.Where(p =>
+                        p.Flights.Any(f => f.Departure.Date == dateOnly));
+                }
+
+                var packages = await query.ToListAsync();
+
+                var respons = packages.Select(package => new PackageResponseDto
+                {
+                    Id = package.Id,
+                    Name = package.Name,
+                    Description = package.Description,
+                    Employee = new EmployeeDto
+                    {
+                        EmployeeId = package.Employee.Id,
+                        EmployeeName = package.Employee.Name
+                    },
+                    Flights = package.Flights.Select(f => new FlightDto
+                    {
+                        Departure = f.Departure,
+                    }).ToList(),
+                    Hotel = package.AvailableRooms.GroupBy(r => r.Hotel).Select(group => new HotelWithRoomsDto
+                    {
+                        City = group.Key?.City,
+                        Country = group.Key?.Country,
+                        Rooms = group.Select(r => new RoomDto
+                        {
+                            RoomCapacity = r.RoomCapacity,
+                            RoomType = r.RoomType,
+                        }).ToList()
+                    }).FirstOrDefault()
+                }).ToList();
+
+                return Ok(respons);
+            }
+            catch // if there is no package on the searchcriterias
+            {
+                return ResponseHelper.HandleNoResult();
+            }
+        }
+
         // GET: api/package/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PackageResponseDto>> GetPackage(int id)
