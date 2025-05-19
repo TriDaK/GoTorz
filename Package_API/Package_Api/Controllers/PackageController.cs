@@ -63,7 +63,7 @@ namespace Package_Api.Controllers
 
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<PackageResponseDto>>> GetPackagesByCriteria(
-            string city = null, string country = null, DateTime? date = null) ///// ADD DateTime later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            string city = null, string country = null, DateTime? date = null) 
         {
             try
             {

@@ -69,13 +69,10 @@
     // Method calls
     private async Task SearchPackagesAsync()
     {
-        //packages.Clear();
-
         if (string.IsNullOrEmpty(destinationCity) && string.IsNullOrEmpty(destinationCountry) && date == DateTime.Today)
             packages = await PackageService.GetAllPackagesAsync();
         else
-            packages = await PackageService.SearchPackagesAsync(destinationCity, destinationCountry, date); /*Når denne her kaldes med searchknappen
-                                                                                                                opdateres package ikke*/
+            packages = await PackageService.SearchPackagesAsync(destinationCity, destinationCountry, date); 
     }
 
 }

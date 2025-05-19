@@ -46,6 +46,7 @@ namespace Gotorz.Services
                             FlightNumber = f.FlightNumber,
                             TimeDeparture = f.TimeDeparture
                         }).ToList()
+                        ////////////////////////// ADD hotel and room info. Alt det vi får fra API'en. Evt. udvide API'en 
                     });
             }
             return packages;
