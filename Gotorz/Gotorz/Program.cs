@@ -1,6 +1,7 @@
 using Gotorz.Components;
 using Gotorz.Components.Pages;
 using Gotorz.Services;
+using Gotorz.Services.Api;
 
 namespace Gotorz;
 
@@ -13,9 +14,15 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
         builder.Services.AddHttpClient(); // for the API call
-        builder.Services.AddScoped<FlightService>(); 
+        builder.Services.AddHttpClient("ChatAPI", client => {
+            client.BaseAddress = new Uri("https://localhost:5005"); // Uri to match ChatAPI
+        });
+        builder.Services.AddScoped<ChatApiService>();
         builder.Services.AddScoped<IChatService, ChatService>();
+
+        builder.Services.AddScoped<FlightService>(); 
 
         var app = builder.Build(); 
 

@@ -1,9 +1,10 @@
 ﻿@page "/chat"
 @using Gotorz.Models
 @using Gotorz.Services
+@using Gotorz.Services.Api
 @rendermode InteractiveServer
 
-@inject HttpClient Http
+@inject ChatApiService ChatApiService
 @inject IChatService ChatService
 
 <h3>Chat</h3>
@@ -53,7 +54,7 @@
                 };
 
             // Send via API (not SignalR directly)
-            await Http.PostAsJsonAsync($"api/packagechat/{PackageId}/message", message);
+            await ChatApiService.SendMessageAsync(message);
             NewMessage = string.Empty;
         }
     }
