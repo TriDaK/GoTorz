@@ -14,7 +14,8 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
         builder.Services.AddHttpClient(); // for the API call
-        builder.Services.AddScoped<FlightService>();
+        builder.Services.AddScoped<FlightService>(); 
+        builder.Services.AddScoped<IChatService, ChatService>();
 
         var app = builder.Build(); 
 

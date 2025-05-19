@@ -1,0 +1,65 @@
+﻿@page "/chat"
+@using Gotorz.Models
+@using Gotorz.Services
+@rendermode InteractiveServer
+
+@inject HttpClient Http
+@inject IChatService ChatService
+
+<h3>Chat</h3>
+
+<ul>
+    @foreach (var msg in Messages)
+    {
+        <li>@msg.UserId: @msg.Message (@msg.Timestamp)</li>
+    }
+</ul>
+
+<input @bind="NewMessage" @onkeydown="HandleKeyDown" />
+
+@code {
+    [Parameter] public string PackageId { get; set; }
+
+    List<ChatMessage> Messages = new();
+    string NewMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ChatService.OnMessageReceived += message =>
+        {
+            if (message.PackageId == PackageId)
+            {
+                InvokeAsync(() =>
+                {
+                    Messages.Add(message);
+                    StateHasChanged();
+                });
+            }
+        };
+
+        await ChatService.StartAsync(PackageId);
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(NewMessage))
+        {
+            var message = new ChatMessage
+                {
+                    PackageId = PackageId,
+                    UserId = "some-user", // Get from identity/auth
+                    Message = NewMessage,
+                    Timestamp = DateTime.UtcNow
+                };
+
+            // Send via API (not SignalR directly)
+            await Http.PostAsJsonAsync($"api/packagechat/{PackageId}/message", message);
+            NewMessage = string.Empty;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await ChatService.StopAsync(PackageId);
+    }
+}

@@ -25,16 +25,17 @@ namespace Chat_Api.Controllers
         public async Task<ActionResult<IEnumerable<ChatMessage>>> GetPackageChats()
         {
             // This likely should never be called, at least until we get deep into admin features. 
-            return Ok("Hello from PackageChatController");
+            return Ok("API/GET for all PackageChats");
         }
 
         // GET: api/packagechat/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<ChatMessage>>> GetPackageChat()
+        public async Task<ActionResult<IEnumerable<ChatMessage>>> GetPackageChat(string id)
         {
-            return Ok("Id get");
+            return Ok($"API/GET for PackageChat with Id {id}");
         }
 
+        // POST: api/packagechat/{packageId}/message
         [HttpPost("{packageId}/message")]
         public async Task<IActionResult> PostPackageChatMessage(string packageId, [FromBody] ChatMessage message)
         {
