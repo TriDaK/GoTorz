@@ -2,12 +2,14 @@
 @using Gotorz.Models
 @using Gotorz.Services
 @using Gotorz.Services.Api
+@* No clue how this works *@
+@implements IAsyncDisposable
 @rendermode InteractiveServer
 
 @inject ChatApiService ChatApiService
 @inject IChatService ChatService
 
-<h3>Chat</h3>
+<h3>Chat: @PackageId</h3>
 
 <ul>
     @foreach (var msg in Messages)
@@ -19,13 +21,15 @@
 <input @bind="NewMessage" @onkeydown="HandleKeyDown" />
 
 @code {
-    [Parameter] public string PackageId { get; set; }
+    [Parameter] public int PackageId { get; set; } = 5;
 
-    List<ChatMessage> Messages = new();
-    string NewMessage;
+    private List<ChatMessage> Messages = new();
+    private string NewMessage;
 
     protected override async Task OnInitializedAsync()
     {
+        PackageId = 5; // Dummy value for testing
+
         ChatService.OnMessageReceived += message =>
         {
             if (message.PackageId == PackageId)

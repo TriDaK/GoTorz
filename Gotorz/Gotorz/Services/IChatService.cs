@@ -6,7 +6,7 @@ namespace Gotorz.Services
     {
         event Action<ChatMessage> OnMessageReceived;
 
-        Task StartAsync(string packageId);
-        Task StopAsync(string packageId);
+        Task StartAsync(int packageId);
+        Task StopAsync(int packageId);
     }
 }

@@ -6,11 +6,17 @@ namespace Gotorz.Services
 {
     public class ChatService : IChatService
     {
+        private readonly IConfiguration _config;
         private HubConnection _hubConnection;
 
         public event Action<ChatMessage> OnMessageReceived;
 
-        public async Task StartAsync(string packageId)
+        public ChatService(IConfiguration config)
+        {
+            _config = config;
+        }
+
+        public async Task StartAsync(int packageId)
         {
             if (_hubConnection != null) return;
 
@@ -28,7 +34,7 @@ namespace Gotorz.Services
             await _hubConnection.InvokeAsync("JoinPackageGroup", packageId);
         }
 
-        public async Task StopAsync(string packageId)
+        public async Task StopAsync(int packageId)
         {
             if (_hubConnection != null)
             {
