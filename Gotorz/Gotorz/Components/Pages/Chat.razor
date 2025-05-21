@@ -19,6 +19,7 @@
     <p>
         Message:
         <input @bind="NewMessage" @onkeydown="HandleKeyDown" />
+        <button @onclick="() => SendMessage()">Send</button>
     </p>
 </div>
 
@@ -29,10 +30,10 @@
         Chatbox: 
     </p>
     <ul>
-    @foreach (var msg in Messages)
-    {
-        <li>@msg.UserId: @msg.Message (@msg.Timestamp)</li>
-    }
+        @foreach (var msg in Messages)
+        {
+            <li>@msg.UserId: @msg.Message (@msg.Timestamp)</li>
+        }
     </ul>
 </div>
 
@@ -64,18 +65,23 @@
     {
         if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(NewMessage))
         {
-            var message = new ChatMessage
-                {
-                    PackageId = PackageId,
-                    UserId = InputName, // Get from identity/auth
-                    Message = NewMessage,
-                    Timestamp = DateTime.UtcNow
-                };
-
-            // Send via API (not SignalR directly)
-            await ChatApiService.SendMessageAsync(message);
-            NewMessage = string.Empty;
+            SendMessage();
         }
+    }
+
+    private async Task SendMessage()
+    {
+        var message = new ChatMessage
+            {
+                PackageId = PackageId,
+                UserId = InputName, // Get from identity/auth
+                Message = NewMessage,
+                Timestamp = DateTime.UtcNow
+            };
+
+        // Send via API (not SignalR directly)
+        await ChatApiService.SendMessageAsync(message);
+        NewMessage = string.Empty;
     }
 
     public async ValueTask DisposeAsync()
