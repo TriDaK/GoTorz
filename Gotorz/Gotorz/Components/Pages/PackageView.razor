@@ -1,4 +1,4 @@
-﻿@page "/packageView/{packageID:int}"
+﻿@page "/packageView/{packageId:int}"
 @using Gotorz.Models
 @using Gotorz.Services
 @rendermode InteractiveServer
@@ -11,8 +11,10 @@
 }
 else
 {
+    @*DELE ALT OP MED DIV !!!!!!!!!!!!!!!!!!!!!!!!*@
+
     @*Header - package name*@
-    <h3>PackageView for @packageID</h3> @*Only for testing purposes*@
+    <h3>PackageView for @packageId</h3> @*Only for testing purposes*@
     <h3>@package.Name</h3>
 
     @*Description*@
@@ -21,24 +23,37 @@ else
     <p>@package.Description</p>
 
     @*Flight info from API*@
+    <p></p>  <p></p>
     <h4>Flights:</h4>
-
+    <h5>Outbound:</h5>
+    <p>@package.Flights[0].DestinationFrom (@package.Flights[0].AirportFrom) - @package.Flights[0].DestinationFrom (@package.Flights[0].AirportFrom)</p>
+    <h5>Return: </h5>
 
     @*Hotel info from API*@
+    <p></p>  <p></p>
     <h4>Hotel:</h4>
 
     @*Traveler to Traveler chatfunction*@
-        @*Kalde Martins chat funktion her, med packageID som parameter*@
+    <p></p>  <p></p>
+    <h4>Traveler2Traveler chat:</h4>
+    <Chat PackageId=@packageId/>
 }
 
 @code {
     [Parameter]
-    public int packageID { get; set; }
+    public int packageId { get; set; }
 
     private Package package;
+    private Flight outboundFlight;
+    private Flight returnFlight;
 
     protected override async Task OnInitializedAsync()
     {
-        package = await PackageService.SearchPackageAsyncByID(packageID);
+        package = await PackageService.SearchPackageAsyncByID(packageId);
+
+        // flight info from API 
+
+
+        // hotal info from API
     }
 }

@@ -3,6 +3,7 @@ using Chat_Api.Hubs;
 using Chat_Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Chat_Api.Controllers
@@ -28,11 +29,14 @@ namespace Chat_Api.Controllers
             return Ok("API/GET for all PackageChats");
         }
 
-        // GET: api/packagechat/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<ChatMessage>>> GetPackageChat(string id)
+        // GET: api/packagechat/{packageId}
+        [HttpGet("{packageId}")]
+        public async Task<ActionResult<IEnumerable<ChatMessage>>> GetPackageChat(string packageId)
         {
-            return Ok($"API/GET for PackageChat with Id {id}");
+            return Ok(await _context.Messages
+                .Where(m => m.PackageId == int.Parse(packageId))
+                .OrderByDescending(m => m.Timestamp)
+                .ToListAsync());
         }
 
         // POST: api/packagechat/{packageId}/message

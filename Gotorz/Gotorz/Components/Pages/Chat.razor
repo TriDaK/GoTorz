@@ -1,4 +1,4 @@
-﻿@page "/chat"
+﻿@page "/chat/{PackageId:int}"
 @using Gotorz.Models
 @using Gotorz.Services
 @using Gotorz.Services.Api
@@ -9,7 +9,7 @@
 @inject ChatApiService ChatApiService
 @inject IChatService ChatService
 
-<h3>Chat: @PackageId</h3>
+<h3>Chat: @PackageId</h3> @*ONLY FOR TESTING PURPOSES*@
 
 <div>
     <p>
@@ -38,7 +38,7 @@
 </div>
 
 @code {
-    [Parameter] public int PackageId { get; set; } = 5;
+    [Parameter] public int PackageId { get; set; }
 
     private List<ChatMessage> Messages = new();
     private string InputName;
@@ -46,6 +46,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // subscription to specific group ???????????????????????????????????????????????????????????????????????
         ChatService.OnMessageReceived += message =>
         {
             if (message.PackageId == PackageId)
@@ -57,6 +58,9 @@
                 });
             }
         };
+
+        // Load previous messages 
+        Messages = await ChatApiService.GetChatMessagesPerPackage(PackageId);
 
         await ChatService.StartAsync(PackageId);
     }

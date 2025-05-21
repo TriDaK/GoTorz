@@ -16,8 +16,11 @@ public class Program
             .AddInteractiveServerComponents();
 
         builder.Services.AddHttpClient(); // for the API call
-        builder.Services.AddHttpClient("ChatAPI", client => {
-            client.BaseAddress = new Uri("https://localhost:5005"); // Uri to match ChatAPI
+        
+        builder.Services.AddHttpClient("ChatAPI", (sp,client) => {
+            var config = sp.GetRequiredService<IConfiguration>();
+            var baseUrl = config["Urls:ChatApi"];
+            client.BaseAddress = new Uri(baseUrl);
         });
         builder.Services.AddScoped<ChatApiService>();
         builder.Services.AddScoped<IChatService, ChatService>();
