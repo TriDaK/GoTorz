@@ -2,7 +2,7 @@
 
 namespace Gotorz.Services
 {
-    public interface IChatService : IAsyncDisposable
+    public interface IChatHubService : IAsyncDisposable
     {
         event Action<ChatMessage> OnMessageReceived;
 

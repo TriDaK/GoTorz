@@ -1,13 +1,13 @@
 ﻿using Gotorz.Models;
 using System.Linq.Expressions;
 
-namespace Gotorz.Services.Api
+namespace Gotorz.Services
 {
-    public class ChatApiService
+    public class ChatHttpService :IChatHttpService
     {
         private readonly HttpClient _httpClient;
 
-        public ChatApiService(IHttpClientFactory factory)
+        public ChatHttpService(IHttpClientFactory factory)
         {
             _httpClient = factory.CreateClient("ChatAPI");
         }

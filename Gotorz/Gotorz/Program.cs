@@ -1,7 +1,6 @@
 using Gotorz.Components;
 using Gotorz.Components.Pages;
 using Gotorz.Services;
-using Gotorz.Services.Api;
 
 namespace Gotorz;
 
@@ -22,8 +21,8 @@ public class Program
             var baseUrl = config["Urls:ChatApi"];
             client.BaseAddress = new Uri(baseUrl);
         });
-        builder.Services.AddScoped<ChatApiService>();
-        builder.Services.AddScoped<IChatService, ChatService>();
+        builder.Services.AddScoped<ChatHttpService>();
+        builder.Services.AddScoped<IChatHubService, ChatHubService>();
  
         builder.Services.AddScoped<FlightService>();
         builder.Services.AddScoped<IPackageService, PackageService>();

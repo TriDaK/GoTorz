@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Gotorz.Services
 {
-    public class ChatService : IChatService
+    public class ChatHubService : IChatHubService
     {
         private readonly IConfiguration _config;
         private HubConnection _hubConnection;
 
         public event Action<ChatMessage> OnMessageReceived;
 
-        public ChatService(IConfiguration config)
+        public ChatHubService(IConfiguration config)
         {
             _config = config;
         }
