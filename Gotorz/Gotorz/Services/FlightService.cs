@@ -28,7 +28,7 @@ namespace Gotorz.Services
             {
                 url += $"destinationTo={to}&";
             }
-            if (string.IsNullOrWhiteSpace(flightNumber))
+            if (!string.IsNullOrWhiteSpace(flightNumber))
             {
                 url += $"flightnumber={flightNumber}&";
             }

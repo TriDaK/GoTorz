@@ -4,6 +4,7 @@
 @rendermode InteractiveServer
 
 @inject IPackageService PackageService
+@inject FlightService FlightService
 
 @if (package == null)
 {
@@ -26,7 +27,19 @@ else
     <p></p>  <p></p>
     <h4>Flights:</h4>
     <h5>Outbound:</h5>
-    <p>@package.Flights[0].DestinationFrom (@package.Flights[0].AirportFrom) - @package.Flights[0].DestinationFrom (@package.Flights[0].AirportFrom)</p>
+    <p>@outboundFlight.DestinationFrom (@outboundFlight.AirportFrom) - @returnFlight.DestinationFrom (@returnFlight.AirportFrom)</p>
+
+    <p>@package.Flights[0].FlightNumber</p>
+    
+    @*<h1>TEST</h1>
+    <div>
+        @foreach (var f in outboundFlight)
+        {
+            <p>@f.DestinationFrom to @f.DestinationTo</p>
+        }
+    </div>*@
+
+
     <h5>Return: </h5>
 
     @*Hotel info from API*@
@@ -53,6 +66,33 @@ else
 
         // flight info from API 
 
+        //DateTime departure = package.Flights[0].TimeDeparture;
+        /*string flightNumber = package.Flights[0].FlightNumber;
+        outboundFlight = await FlightService.SearchFlightsAsync(null, null, null, flightNumber);*/
+
+
+
+        //DateTime departure = package.Flights[0].TimeDeparture;
+        //string flightNumber = package.Flights[0].FlightNumber;
+        //List<Flight> outbound = new();
+                
+        /*List<Flight> outbound = await FlightService.SearchFlightsAsync("", "", package.Flights[0].TimeDeparture, package.Flights[0].FlightNumber);
+        outboundFlight = outbound[0];
+
+        try
+        {
+            List<Flight> inbound = await FlightService.SearchFlightsAsync("", "", package.Flights[1].TimeDeparture, package.Flights[1].FlightNumber);
+            returnFlight = inbound[0];
+        }
+        catch
+        {
+            returnFlight = new Flight();
+        }*/
+
+        
+        outboundFlight = (await FlightService.SearchFlightsAsync("", "", package.Flights[0].TimeDeparture, package.Flights[0].FlightNumber))[0];
+
+        returnFlight = (await FlightService.SearchFlightsAsync("", "", package.Flights[1].TimeDeparture, package.Flights[1].FlightNumber))[0];
 
         // hotal info from API
     }
