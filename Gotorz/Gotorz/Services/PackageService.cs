@@ -55,7 +55,21 @@ namespace Gotorz.Services
         public async Task<Package?> SearchPackageAsyncByID(int id) // ? because then it is OK to search a package that dosn't exist 
         {
             string url = $"https://localhost:5003/api/Package/{id}";
-            return await _httpClient.GetFromJsonAsync<Package>(url);
+            var apiPackage = await _httpClient.GetFromJsonAsync<PackageApiPackage>(url) ?? new PackageApiPackage();
+
+            var package = new Package
+            {
+                Id = apiPackage.Id,
+                Name = apiPackage.Name,
+                Description = apiPackage.Description,
+                Employee = apiPackage.Employee,
+                Flights = apiPackage.Flights.Select(f => new Flight
+                {
+                    FlightNumber = f.FlightNumber,
+                    TimeDeparture = f.TimeDeparture
+                }).ToList()
+            };
+            return package;
         }
 
         public async Task<List<Package>> GetAllPackagesAsync()
