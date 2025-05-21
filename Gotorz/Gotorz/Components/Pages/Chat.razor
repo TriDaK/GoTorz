@@ -11,19 +11,33 @@
 
 <h3>Chat: @PackageId</h3>
 
-<ul>
+<div>
+    <p>
+        Username:
+        <input @bind="InputName" />
+    </p>
+    <p>
+        Message:
+        <input @bind="NewMessage" @onkeydown="HandleKeyDown" />
+    </p>
+</div>
+
+<br />
+
+<div>
+    <ul>
     @foreach (var msg in Messages)
     {
         <li>@msg.UserId: @msg.Message (@msg.Timestamp)</li>
     }
-</ul>
-
-<input @bind="NewMessage" @onkeydown="HandleKeyDown" />
+    </ul>
+</div>
 
 @code {
     [Parameter] public int PackageId { get; set; } = 5;
 
     private List<ChatMessage> Messages = new();
+    private string InputName;
     private string NewMessage;
 
     protected override async Task OnInitializedAsync()
@@ -50,7 +64,7 @@
             var message = new ChatMessage
                 {
                     PackageId = PackageId,
-                    UserId = "some-user", // Get from identity/auth
+                    UserId = InputName, // Get from identity/auth
                     Message = NewMessage,
                     Timestamp = DateTime.UtcNow
                 };
