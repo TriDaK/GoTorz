@@ -41,7 +41,7 @@
         @foreach (var flight in outboundFlights)
         {
             <tr>
-                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectFlight(flight))" /></td>
+                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectOutboundFlight(flight))" /></td>
                 <td>@flight.DestinationFrom</td>
                 <td>@flight.DestinationTo</td>
                 <td>@flight.TimeDeparture.ToString("dd-MM-yyyy")</td>
@@ -74,7 +74,7 @@
         @foreach (var flight in returnFlights)
         {
             <tr>
-                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectFlight(flight))" /></td>
+                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectReturnFlight(flight))" /></td>
                 <td>@flight.DestinationFrom</td>
                 <td>@flight.DestinationTo</td>
                 <td>@flight.TimeDeparture.ToString("dd-MM-yyyy")</td>
@@ -156,7 +156,7 @@
         <tr>
             <th>Package Name</th>
             <th>Description</th>
-            <th>Flight Number</th>
+            <th>Flight Numbers</th>
             <th>Hotel Name</th>
             <th>Total Price</th>
         </tr>
@@ -167,7 +167,7 @@
             <tr>
                 <td>@package.Name</td>
                 <td>@package.Description</td>
-                <td>@package.Flights[0].FlightNumber</td>
+                <td>@string.Join(", ", package.Flights.Select(f => f.FlightNumber))</td>
                 <td>@package.Hotel.Phone</td>
                 @* <td>@package.Price</td> *@
             </tr>
@@ -183,7 +183,8 @@
     private DateTime? returnDate = null;
     private List<Flight> outboundFlights = new();
     private List<Flight> returnFlights = new();
-    private Flight? selectedFlight = null;
+    private Flight? selectedOutboundFlight = null;
+    private Flight? selectedReturnFlight = null;
 
     private async Task SearchFlights()
     {
@@ -191,9 +192,14 @@
         returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate);
     }
 
-    private void SelectFlight(Flight flight)
+    private void SelectOutboundFlight(Flight flight)
     {
-        selectedFlight = flight;
+        selectedOutboundFlight = flight;
+    }
+
+    private void SelectReturnFlight(Flight flight)
+    {
+        selectedReturnFlight = flight;
     }
 
     // for hotel search
@@ -227,16 +233,16 @@
     private string packageDescription = string.Empty;
     private PackageApiPackage package = null;
     private List<Flight> selectedFlights = new();
-    private List<Hotel> selectedHotels = new ();
+    private List<Hotel> selectedHotels = new();
+
     private async Task CreatePackage()
     {
-
-
-        if (selectedFlight != null && selectedHotel != null)
+        if (selectedOutboundFlight != null && selectedReturnFlight != null && selectedHotel != null)
         {
             selectedFlights.Clear();
             selectedHotels.Clear();
-            selectedFlights.Add(selectedFlight);
+            selectedFlights.Add(selectedOutboundFlight);
+            selectedFlights.Add(selectedReturnFlight);
             selectedHotels.Add(selectedHotel);
             package = PackageService.CreatePackage(packageName, packageDescription, selectedFlights, selectedHotels);
             var response = await PackageService.CreatePackageAsync(package);

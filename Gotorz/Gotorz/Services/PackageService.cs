@@ -21,31 +21,30 @@ public class PackageService
         return response;
     }
 
-    public PackageApiPackage CreatePackage(string name, string description, List<Flight> selectedFlight, List<Hotel> selectedHotel)
-    { // new package dto
-        var package = new PackageApiPackage //Api package istedetfor 
+    public PackageApiPackage CreatePackage(string name, string description, List<Flight> selectedFlights, List<Hotel> selectedHotels)
+    {
+        var package = new PackageApiPackage
         {
-
             Name = name,
             Description = description,
-            Flights = selectedFlight.Select(f => new PackageApiFlight
+            Flights = selectedFlights.Select(f => new PackageApiFlight
             {
                 FlightNumber = f.FlightNumber,
                 TimeDeparture = f.TimeDeparture
             }).ToList(),
 
-            //Price = selectedFlight.Price + (decimal)selectedHotel.Price * 1.15m // ret decimal
-
-            Rooms = selectedHotel.Select(f => new PackageApiRoom
+            Rooms = selectedHotels.Select(h => new PackageApiRoom
             {
-                RoomCapacity = f.Capacity,
-                RoomType = f.Type,
-                CheckIn = f.CheckIn,
-                CheckOut = f.CheckOut
+                RoomCapacity = h.Capacity,
+                RoomType = h.Type,
+                CheckIn = h.CheckIn,
+                CheckOut = h.CheckOut
             }).ToList(),
 
             Hotel = new PackageApiHotel
-            { Phone = selectedHotel[0].Phone },
+            {
+                Phone = selectedHotels[0].Phone
+            },
             EmployeeId = 1
         };
 
