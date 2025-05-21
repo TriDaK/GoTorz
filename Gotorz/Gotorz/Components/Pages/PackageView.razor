@@ -27,12 +27,11 @@ else
     <p></p>  <p></p>
     <h4>Flights:</h4>
     <h5>Outbound:</h5>
-    <p>@outboundFlight.DestinationFrom (@outboundFlight.AirportFrom) - @returnFlight.DestinationFrom (@returnFlight.AirportFrom)</p>
-
-    <p>@package.Flights[0].FlightNumber</p>
-    
-    @*<h1>TEST</h1>
-    <div>
+    <p>@outboundFlight.DestinationFrom (@outboundFlight.AirportFrom) - @outboundFlight.DestinationTo (@outboundFlight.AirportTo)</p>
+        
+    @*<h1>TEST</h1>*@
+    <p> @package.Flights[0].FlightNumber </p>
+    @*<div>
         @foreach (var f in outboundFlight)
         {
             <p>@f.DestinationFrom to @f.DestinationTo</p>
@@ -72,14 +71,14 @@ else
 
 
 
-        //DateTime departure = package.Flights[0].TimeDeparture;
-        //string flightNumber = package.Flights[0].FlightNumber;
+        DateTime departure = package.Flights[0].TimeDeparture;
+        string flightNumber = package.Flights[0].FlightNumber;
         //List<Flight> outbound = new();
                 
-        /*List<Flight> outbound = await FlightService.SearchFlightsAsync("", "", package.Flights[0].TimeDeparture, package.Flights[0].FlightNumber);
+        List<Flight> outbound = await FlightService.SearchFlightsAsync("", "", /*package.Flights[0].TimeDeparture, package.Flights[0].FlightNumber,*/ departure, flightNumber);
         outboundFlight = outbound[0];
 
-        try
+        /*try
         {
             List<Flight> inbound = await FlightService.SearchFlightsAsync("", "", package.Flights[1].TimeDeparture, package.Flights[1].FlightNumber);
             returnFlight = inbound[0];
@@ -90,9 +89,9 @@ else
         }*/
 
         
-        outboundFlight = (await FlightService.SearchFlightsAsync("", "", package.Flights[0].TimeDeparture, package.Flights[0].FlightNumber))[0];
+        //outboundFlight = (await FlightService.SearchFlightsAsync("", "", package.Flights[0].TimeDeparture, package.Flights[0].FlightNumber))[0];
 
-        returnFlight = (await FlightService.SearchFlightsAsync("", "", package.Flights[1].TimeDeparture, package.Flights[1].FlightNumber))[0];
+        //returnFlight = (await FlightService.SearchFlightsAsync("", "", package.Flights[1].TimeDeparture, package.Flights[1].FlightNumber))[0];
 
         // hotal info from API
     }
