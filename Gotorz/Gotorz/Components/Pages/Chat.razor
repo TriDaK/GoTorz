@@ -1,13 +1,12 @@
 ﻿@page "/chat/{PackageId:int}"
 @using Gotorz.Models
 @using Gotorz.Services
-@using Gotorz.Services.Api
 @* No clue how this works *@
 @implements IAsyncDisposable
 @rendermode InteractiveServer
 
-@inject ChatHttpService ChatApiService
-@inject IChatHubService ChatService
+@inject IChatHttpService ChatHttpService
+@inject IChatHubService ChatHubService
 
 <h3>Chat: @PackageId</h3> @*ONLY FOR TESTING PURPOSES*@
 
@@ -47,7 +46,7 @@
     protected override async Task OnInitializedAsync()
     {
         // subscription to specific group ???????????????????????????????????????????????????????????????????????
-        ChatService.OnMessageReceived += message =>
+        ChatHubService.OnMessageReceived += message =>
         {
             if (message.PackageId == PackageId)
             {
@@ -60,9 +59,9 @@
         };
 
         // Load previous messages 
-        Messages = await ChatApiService.GetChatMessagesPerPackage(PackageId);
+        Messages = await ChatHttpService.GetChatMessagesPerPackage(PackageId);
 
-        await ChatService.StartAsync(PackageId);
+        await ChatHubService.StartAsync(PackageId);
     }
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
@@ -84,12 +83,12 @@
             };
 
         // Send via API (not SignalR directly)
-        await ChatApiService.SendMessageAsync(message);
+        await ChatHttpService.SendMessageAsync(message);
         NewMessage = string.Empty;
     }
 
     public async ValueTask DisposeAsync()
     {
-        await ChatService.StopAsync(PackageId);
+        await ChatHubService.StopAsync(PackageId);
     }
 }
