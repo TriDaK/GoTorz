@@ -34,13 +34,15 @@
             <h4>Available Packages</h4>
             @foreach (var package in packages)
             {
-                <div class="card mb-3">
+                <NavLink class="card mb-3 text-decoration-none text-dark" href="@($"/packageView/{package.Id}")">
                     <div class="card-body">
                         <h5 class="card-title">@package.Name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">@package.Description</h6>
-                        <p class="card-text">Date: @package.Flights.First().TimeDeparture.ToString("dd/MM/yy") to @package.Flights.Last().TimeDeparture.ToString("dd/MM/yy")</p>
+                        <p class="card-text">
+                            Date: @package.Flights.First().TimeDeparture.ToString("dd/MM/yy") 
+                            to @package.Flights.Last().TimeDeparture.ToString("dd/MM/yy")</p>
                     </div>
-                </div>
+                </NavLink>
             }
         }
         else

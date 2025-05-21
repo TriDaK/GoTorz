@@ -1,0 +1,44 @@
+﻿@page "/packageView/{packageID:int}"
+@using Gotorz.Models
+@using Gotorz.Services
+@rendermode InteractiveServer
+
+@inject IPackageService PackageService
+
+@if (package == null)
+{
+
+}
+else
+{
+    @*Header - package name*@
+    <h3>PackageView for @packageID</h3> @*Only for testing purposes*@
+    <h3>@package.Name</h3>
+
+    @*Description*@
+    <p></p>  <p></p>
+    <h4>Decription:</h4>
+    <p>@package.Description</p>
+
+    @*Flight info from API*@
+    <h4>Flights:</h4>
+
+
+    @*Hotel info from API*@
+    <h4>Hotel:</h4>
+
+    @*Traveler to Traveler chatfunction*@
+        @*Kalde Martins chat funktion her, med packageID som parameter*@
+}
+
+@code {
+    [Parameter]
+    public int packageID { get; set; }
+
+    private Package package;
+
+    protected override async Task OnInitializedAsync()
+    {
+        package = await PackageService.SearchPackageAsyncByID(packageID);
+    }
+}
