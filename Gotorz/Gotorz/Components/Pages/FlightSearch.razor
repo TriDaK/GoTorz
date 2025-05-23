@@ -1,31 +1,32 @@
 ﻿@page "/flightsearch"
+@using Gotorz.Models.PackageDTOs
 @using Gotorz.Models
 @using Gotorz.Services
 @rendermode InteractiveServer
 
 @inject FlightService FlightService
+@inject HotelService HotelService
+@inject PackageService PackageService
 
 <h3>Search for Flights</h3>
 
-@*Flight found by destination and time*@
-By destination and time 
-<br />
-@*Search fields*@
+@*Flight search fields*@
 <input @bind="from" placeholder="From" />
 <input @bind="to" placeholder="To" />
 <input @bind="outboundDate" type="date" />
 <input @bind="returnDate" type="date" />
-<br /> 
 <br />
-@*Search button*@
+<br />
+@*Flight search button*@
 <button @onclick="SearchFlights">Search</button>
-@*List of fligts*@
+@*List of flights*@
 <br />
 <br />
 <h3>Outbound flights: </h3>
-<table>
+<table class="table">
     <thead>
         <tr>
+            <th>Select</th>
             <th>Destination From</th>
             <th>Destination To</th>
             <th>Departure Date</th>
@@ -33,12 +34,14 @@ By destination and time
             <th>Arrival Date</th>
             <th>Arrival Time</th>
             <th>Flight Number</th>
+            <th>Price</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var flight in outboundFlights)
         {
             <tr>
+                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectOutboundFlight(flight))" /></td>
                 <td>@flight.DestinationFrom</td>
                 <td>@flight.DestinationTo</td>
                 <td>@flight.TimeDeparture.ToString("dd-MM-yyyy")</td>
@@ -46,15 +49,17 @@ By destination and time
                 <td>@flight.TimeArrival.ToString("dd-MM-yyyy")</td>
                 <td>@flight.TimeArrival.ToString("HH:mm")</td>
                 <td>@flight.FlightNumber</td>
+                <td>@flight.Price</td>
             </tr>
         }
     </tbody>
 </table>
-<br/>
+<br />
 <h3>Return flights: </h3>
-<table>
+<table class="table">
     <thead>
         <tr>
+            <th>Select</th>
             <th>Destination From</th>
             <th>Destination To</th>
             <th>Departure Date</th>
@@ -62,12 +67,14 @@ By destination and time
             <th>Arrival Date</th>
             <th>Arrival Time</th>
             <th>Flight Number</th>
+            <th>Price</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var flight in returnFlights)
         {
             <tr>
+                <td><input type="radio" @bind="flight.IsSelected" @onclick="@(() => SelectReturnFlight(flight))" /></td>
                 <td>@flight.DestinationFrom</td>
                 <td>@flight.DestinationTo</td>
                 <td>@flight.TimeDeparture.ToString("dd-MM-yyyy")</td>
@@ -75,27 +82,178 @@ By destination and time
                 <td>@flight.TimeArrival.ToString("dd-MM-yyyy")</td>
                 <td>@flight.TimeArrival.ToString("HH:mm")</td>
                 <td>@flight.FlightNumber</td>
+                <td>@flight.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Search for Hotels</h3>
+
+@*Hotel search fields*@
+<input @bind="hotelCity" placeholder="City" />
+<input @bind="hotelCheckInDate" type="date" />
+<input @bind="hotelCheckOutDate" type="date" />
+<input @bind="hotelRating" type="number" placeholder="Rating" step="0.1" min="0" max="5" />
+<input @bind="hotelCapacity" type="number" placeholder="Capacity" />
+<input @bind="hotelRoomType" placeholder="Room Type" />
+<br />
+<br />
+@*Hotel search button*@
+<button @onclick="SearchHotels">Search Hotels</button>
+
+@*List of hotels*@
+<br />
+<br />
+<h3>Hotel Options: </h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Select</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Check-In Date</th>
+            <th>Check-Out Date</th>
+            <th>Rating</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hotel in hotels)
+        {
+            <tr>
+                <td><input type="radio" @bind="hotel.IsSelected" @onclick="@(() => SelectHotel(hotel))" /></td>
+                <td>@hotel.Name</td>
+                <td>@hotel.StreetName @hotel.StreetNo, @hotel.Zipcode @hotel.City, @hotel.Country</td>
+                <td>@hotel.CheckIn.ToString("dd-MM-yyyy")</td>
+                <td>@hotel.CheckOut.ToString("dd-MM-yyyy")</td>
+                <td>@hotel.Rating</td>
+                <td>@hotel.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@*Package Name and Description*@
+<br />
+<br />
+<input @bind="packageName" placeholder="Package Name" />
+<br />
+<br />
+<textarea @bind="packageDescription" placeholder="Package Description"></textarea>
+
+@*Create Package*@
+<br />
+<br />
+<button @onclick="CreatePackage">Create Package</button>
+
+@*Package*@
+<br />
+<br />
+<h3>Package: </h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Package Name</th>
+            <th>Description</th>
+            <th>Flight Numbers</th>
+            <th>Hotel Name</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (package != null)
+        {
+            <tr>
+                <td>@package.Name</td>
+                <td>@package.Description</td>
+                <td>@string.Join(", ", package.Flights.Select(f => f.FlightNumber))</td>
+                <td>@package.Hotel.Phone</td>
+                @* <td>@package.Price</td> *@
             </tr>
         }
     </tbody>
 </table>
 
 @code {
-    // for search by destination and date
-    private string from = null;
-    private string to = null;
+    // for flight search
+    private string from = string.Empty;
+    private string to = string.Empty;
     private DateTime? outboundDate = null;
     private DateTime? returnDate = null;
     private List<Flight> outboundFlights = new();
     private List<Flight> returnFlights = new();
+    private Flight? selectedOutboundFlight = null;
+    private Flight? selectedReturnFlight = null;
 
-    private async Task SearchFlights() // both outbound and return flights in one
+    private async Task SearchFlights()
     {
-        // list outbound flights for outbound date
-        outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate, null);
-                
-        // list return flights for return date
-        returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate, null);
+        outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate);
+        returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate);
     }
 
+    private void SelectOutboundFlight(Flight flight)
+    {
+        selectedOutboundFlight = flight;
+    }
+
+    private void SelectReturnFlight(Flight flight)
+    {
+        selectedReturnFlight = flight;
+    }
+
+    // for hotel search
+    private string hotelCity = string.Empty;
+    private DateTime? hotelCheckInDate = null;
+    private DateTime? hotelCheckOutDate = null;
+    private double? hotelRating = null;
+    private int? hotelCapacity = null;
+    private string hotelRoomType = string.Empty;
+    private List<Hotel> hotels = new();
+    private Hotel? selectedHotel = null;
+
+    private async Task SearchHotels()
+    {
+        hotels = await HotelService.SearchHotelsAsync(
+            hotelCity,
+            hotelCheckInDate,
+            hotelCheckOutDate,
+            hotelRating,
+            hotelCapacity,
+            hotelRoomType);
+    }
+
+    private void SelectHotel(Hotel hotel)
+    {
+        selectedHotel = hotel;
+    }
+
+    // for package
+    private string packageName = string.Empty;
+    private string packageDescription = string.Empty;
+    private PackageApiPackage package = null;
+    private List<Flight> selectedFlights = new();
+    private List<Hotel> selectedHotels = new();
+
+    private async Task CreatePackage()
+    {
+        if (selectedOutboundFlight != null && selectedReturnFlight != null && selectedHotel != null)
+        {
+            selectedFlights.Clear();
+            selectedHotels.Clear();
+            selectedFlights.Add(selectedOutboundFlight);
+            selectedFlights.Add(selectedReturnFlight);
+            selectedHotels.Add(selectedHotel);
+            package = PackageService.CreatePackage(packageName, packageDescription, selectedFlights, selectedHotels);
+            var response = await PackageService.CreatePackageAsync(package);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Package created successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to create package.");
+            }
+        }
+    }
 }

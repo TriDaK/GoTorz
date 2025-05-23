@@ -20,5 +20,11 @@ namespace Gotorz.Models.PackageDTOs
 
         [JsonPropertyName("employee")]
         public Employee Employee { set; get; }
+        
+        [JsonPropertyName("hotel")]
+        public PackageApiHotel Hotel { get; set; }
+
+        [JsonPropertyName("rooms")]
+        public List<PackageApiRoom> Rooms { get; set; }
     }
 }

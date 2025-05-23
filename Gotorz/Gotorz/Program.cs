@@ -1,14 +1,7 @@
 using Gotorz.Components;
-using Gotorz.Components.Pages;
 using Gotorz.Services;
 
-namespace Gotorz;
-
-public class Program
-{
-    public static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
@@ -26,25 +19,38 @@ public class Program
  
         builder.Services.AddScoped<FlightService>();
         builder.Services.AddScoped<IPackageService, PackageService>();
+/*******************************************************************
+ * Det her kommer fra HotelConnect ovenstående fra main/packageAPI*
+ * ****************************************************************/
+builder.Services.AddHttpClient<FlightService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5001");
+});
+builder.Services.AddHttpClient<HotelService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5002");
+});
+builder.Services.AddHttpClient<PackageService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5003");
+});
 
-        var app = builder.Build(); 
+var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
-        {
-            app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
-        }
-
-        app.UseHttpsRedirection();
-
-        app.UseStaticFiles();
-        app.UseAntiforgery();
-
-        app.MapRazorComponents<App>()
-            .AddInteractiveServerRenderMode();
-
-        app.Run();
-    }
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+app.UseAntiforgery();
+
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+
+app.Run();
