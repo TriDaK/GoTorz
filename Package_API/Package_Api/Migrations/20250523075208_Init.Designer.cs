@@ -12,8 +12,8 @@ using Package_Api.Data;
 namespace Package_Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250430112930_RemovePriceInPackage")]
-    partial class RemovePriceInPackage
+    [Migration("20250523075208_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,10 +86,6 @@ namespace Package_Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Airport")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Departure")
                         .HasColumnType("datetime2");
 
@@ -114,6 +110,14 @@ namespace Package_Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()

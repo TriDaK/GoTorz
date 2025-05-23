@@ -1,0 +1,98 @@
+﻿@page "/packageView/{packageId:int}"
+@using Gotorz.Models
+@using Gotorz.Services
+@rendermode InteractiveServer
+
+@inject IPackageService PackageService
+@inject FlightService FlightService
+
+@if (package == null)
+{
+
+}
+else
+{
+    @*DELE ALT OP MED DIV !!!!!!!!!!!!!!!!!!!!!!!!*@
+
+    @*Header - package name*@
+    <h3>PackageView for @packageId</h3> @*Only for testing purposes*@
+    <h3>@package.Name</h3>
+
+    @*Description*@
+    <div>
+        <h4>Decription:</h4>
+        <p>@package.Description</p>
+    </div>
+
+    @*Flight info from API*@
+    <div>
+        <h4>Flights:</h4>
+        <h5>Outbound:</h5>
+        <p>
+            @outboundFlight.FlightNumber
+            - @outboundFlight.DestinationFrom (@outboundFlight.AirportFrom)
+            to @outboundFlight.DestinationTo (@outboundFlight.AirportTo)
+        </p>
+        <p>
+            @outboundFlight.TimeDeparture.ToString("HH:mm")
+            to  @outboundFlight.TimeArrival.ToString("HH:mm")
+            (@($"{(int)outboundDuration.TotalHours}h {outboundDuration.Minutes}m"))
+        </p>
+
+
+        <h5>Return: </h5>
+        <p>
+            @returnFlight.FlightNumber
+            - @returnFlight.DestinationFrom (@returnFlight.AirportFrom)
+            to @returnFlight.DestinationTo (@returnFlight.AirportTo)
+        </p>
+        <p>
+            @returnFlight.TimeDeparture.ToString("HH:mm")
+            to  @returnFlight.TimeArrival.ToString("HH:mm")
+            (@($"{(int)returnDuration.TotalHours}h {returnDuration.Minutes}m"))
+        </p>
+    </div>
+
+    @*Hotel info from API*@
+    <div>
+        <h4>Hotel:</h4>
+    </div>
+
+    @*Traveler to Traveler chatfunction*@
+    <div>
+        <h4>Traveler2Traveler chat:</h4>
+        <Chat PackageId=@packageId />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int packageId { get; set; }
+
+    private Package package;
+    private Flight outboundFlight;
+    private TimeSpan outboundDuration;
+    private Flight returnFlight;
+    private TimeSpan returnDuration;
+
+    protected override async Task OnInitializedAsync()
+    {
+        package = await PackageService.SearchPackageAsyncByID(packageId);
+
+        List<Flight> outbound = await FlightService.SearchFlightsAsync(
+            "", "", package.Flights[0].TimeDeparture, package.Flights[0].FlightNumber
+        );
+        outboundFlight = outbound[0];
+        outboundDuration = GetFlightDuration(outboundFlight.TimeDeparture, outboundFlight.TimeArrival);
+
+        returnFlight = (await FlightService.SearchFlightsAsync(
+            "", "", package.Flights[1].TimeDeparture, package.Flights[1].FlightNumber
+        )).First();
+        returnDuration = GetFlightDuration(returnFlight.TimeDeparture, returnFlight.TimeArrival);
+    }
+
+    private TimeSpan GetFlightDuration(DateTime departure, DateTime arrival)
+    {
+        return arrival - departure;
+    }
+}

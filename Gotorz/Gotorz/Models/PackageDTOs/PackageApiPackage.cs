@@ -1,24 +1,22 @@
-﻿using System.Text.Json.Serialization; // for JsonPropertyName
+﻿using System.Text.Json.Serialization;
 
-namespace Gotorz.Models
+namespace Gotorz.Models.PackageDTOs
 {
-    public class Package
+    public class PackageApiPackage
     {
-        // the info we will save from the package API
-        // some properties commented out until API can deliver them
         [JsonPropertyName("id")]
         public int Id { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; }
-        [JsonPropertyName("description")]
-        public string Description { get; set; }
         [JsonPropertyName("price")]
         public string Price { get; set; }
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
 
         [JsonPropertyName("pictures")]
         public List<Picture?> Pictures { get; set; }
         [JsonPropertyName("flights")]
-        public List<Flight> Flights { get; set; }
+        public List<PackageApiFlight> Flights { get; set; }
 
         [JsonPropertyName("employee")]
         public Employee Employee { set; get; }

@@ -92,10 +92,10 @@ By destination and time
     private async Task SearchFlights() // both outbound and return flights in one
     {
         // list outbound flights for outbound date
-        outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate);
+        outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate, null);
                 
         // list return flights for return date
-        returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate);
+        returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate, null);
     }
 
 }

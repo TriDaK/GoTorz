@@ -21,5 +21,9 @@ namespace Package_Api.Utility
                 StatusCode = 500
             };
         }
+        public static ActionResult HandleNoResult()
+        {
+            return new ObjectResult("No Results on these searchcriterias");
+        }
     }
 }

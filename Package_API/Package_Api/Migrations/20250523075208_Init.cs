@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Flight_Asp.NetCoreWebApi.Migrations
+namespace Package_Api.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateFlightDBTrine : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

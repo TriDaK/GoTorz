@@ -1,0 +1,80 @@
+﻿@page "/packages"
+@using Gotorz.Models
+@using Gotorz.Services
+@rendermode InteractiveServer
+
+@inject IPackageService PackageService
+
+<h3>Overview of package</h3>
+
+<div class="row">
+    <div class="col-md-4">
+        <h4>Search</h4>
+        <EditForm Model="@this" OnValidSubmit="@SearchPackagesAsync" FormName="PackageSearchForm">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="mb-3">
+                <label for="destinationCity" class="form-label">Destination city</label>
+                <InputText id="destinationCity" @bind-Value="@destinationCity" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="destinationCountry" class="form-label">Destination country</label>
+                <InputText id="destinationCountry" @bind-Value="@destinationCountry" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <InputDate id="date" @bind-Value="@date" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </EditForm>
+    </div>
+    <div class="col-md-8">
+        @if (packages != null && packages.Count > 0)
+        {
+            <h4>Available Packages</h4>
+            @foreach (var package in packages)
+            {
+                <NavLink class="card mb-3 text-decoration-none text-dark" href="@($"/packageView/{package.Id}")">
+                    <div class="card-body">
+                        <h5 class="card-title">@package.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@package.Description</h6>
+                        <p class="card-text">
+                            Date: @package.Flights.First().TimeDeparture.ToString("dd/MM/yy") 
+                            to @package.Flights.Last().TimeDeparture.ToString("dd/MM/yy")</p>
+                    </div>
+                </NavLink>
+            }
+        }
+        else
+        {
+            <p>No packages found.</p>
+        }
+    </div>
+</div>
+
+
+@code {
+    // Inits
+    private List<Package> packages = new();
+
+    // Search options
+    private string destinationCity = null;
+    private string destinationCountry = null;
+    private DateTime date = DateTime.Today;
+
+    // "Constructor"
+    protected override async Task OnInitializedAsync()
+    {
+        await SearchPackagesAsync();
+    }
+
+    // Method calls
+    private async Task SearchPackagesAsync()
+    {
+        if (string.IsNullOrEmpty(destinationCity) && string.IsNullOrEmpty(destinationCountry) && date == DateTime.Today)
+            packages = await PackageService.GetAllPackagesAsync();
+        else
+            packages = await PackageService.SearchPackagesAsync(destinationCity, destinationCountry, date); 
+    }
+
+}

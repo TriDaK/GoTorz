@@ -1,0 +1,94 @@
+﻿@page "/chat/{PackageId:int}"
+@using Gotorz.Models
+@using Gotorz.Services
+@* No clue how this works *@
+@implements IAsyncDisposable
+@rendermode InteractiveServer
+
+@inject IChatHttpService ChatHttpService
+@inject IChatHubService ChatHubService
+
+<h3>Chat: @PackageId</h3> @*ONLY FOR TESTING PURPOSES*@
+
+<div>
+    <p>
+        Username:
+        <input @bind="InputName" />
+    </p>
+    <p>
+        Message:
+        <input @bind="NewMessage" @onkeydown="HandleKeyDown" />
+        <button @onclick="() => SendMessage()">Send</button>
+    </p>
+</div>
+
+<br />
+
+<div>
+    <p>
+        Chatbox: 
+    </p>
+    <ul>
+        @foreach (var msg in Messages)
+        {
+            <li>@msg.UserId: @msg.Message (@msg.Timestamp)</li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter] public int PackageId { get; set; }
+
+    private List<ChatMessage> Messages = new();
+    private string InputName;
+    private string NewMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // subscription to specific group ???????????????????????????????????????????????????????????????????????
+        ChatHubService.OnMessageReceived += message =>
+        {
+            if (message.PackageId == PackageId)
+            {
+                InvokeAsync(() =>
+                {
+                    Messages.Add(message);
+                    StateHasChanged();
+                });
+            }
+        };
+
+        // Load previous messages 
+        Messages = await ChatHttpService.GetChatMessagesPerPackage(PackageId);
+
+        await ChatHubService.StartAsync(PackageId);
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(NewMessage))
+        {
+            SendMessage();
+        }
+    }
+
+    private async Task SendMessage()
+    {
+        var message = new ChatMessage
+            {
+                PackageId = PackageId,
+                UserId = InputName, // Get from identity/auth
+                Message = NewMessage,
+                Timestamp = DateTime.UtcNow
+            };
+
+        // Send via API (not SignalR directly)
+        await ChatHttpService.SendMessageAsync(message);
+        NewMessage = string.Empty;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await ChatHubService.StopAsync(PackageId);
+    }
+}

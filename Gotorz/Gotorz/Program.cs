@@ -13,8 +13,19 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
         builder.Services.AddHttpClient(); // for the API call
+        
+        builder.Services.AddHttpClient("ChatAPI", (sp,client) => {
+            var config = sp.GetRequiredService<IConfiguration>();
+            var baseUrl = config["Urls:ChatApi"];
+            client.BaseAddress = new Uri(baseUrl);
+        });
+        builder.Services.AddScoped<IChatHttpService, ChatHttpService>();
+        builder.Services.AddScoped<IChatHubService, ChatHubService>();
+ 
         builder.Services.AddScoped<FlightService>();
+        builder.Services.AddScoped<IPackageService, PackageService>();
 
         var app = builder.Build(); 
 
