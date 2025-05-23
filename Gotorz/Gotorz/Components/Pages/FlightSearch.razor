@@ -188,8 +188,8 @@
 
     private async Task SearchFlights()
     {
-        outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate);
-        returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate);
+        outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate, null);
+        returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate, null);
     }
 
     private void SelectOutboundFlight(Flight flight)

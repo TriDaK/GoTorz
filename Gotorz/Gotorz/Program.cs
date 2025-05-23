@@ -3,37 +3,48 @@ using Gotorz.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-        builder.Services.AddRazorComponents()
-            .AddInteractiveServerComponents();
+// Add services to the container.
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
-        builder.Services.AddHttpClient(); // for the API call
-        
-        builder.Services.AddHttpClient("ChatAPI", (sp,client) => {
-            var config = sp.GetRequiredService<IConfiguration>();
-            var baseUrl = config["Urls:ChatApi"];
-            client.BaseAddress = new Uri(baseUrl);
-        });
-        builder.Services.AddScoped<IChatHttpService, ChatHttpService>();
-        builder.Services.AddScoped<IChatHubService, ChatHubService>();
- 
-        builder.Services.AddScoped<FlightService>();
-        builder.Services.AddScoped<IPackageService, PackageService>();
-/*******************************************************************
- * Det her kommer fra HotelConnect ovenstående fra main/packageAPI*
- * ****************************************************************/
-builder.Services.AddHttpClient<FlightService>(client =>
+builder.Services.AddHttpClient(); // for the API call
+
+//chat
+builder.Services.AddHttpClient("ChatAPI", (sp, client) =>
 {
-    client.BaseAddress = new Uri("https://localhost:5001");
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config["Urls:ChatApi"];
+    client.BaseAddress = new Uri(baseUrl);
 });
-builder.Services.AddHttpClient<HotelService>(client =>
+builder.Services.AddScoped<IChatHttpService, ChatHttpService>();
+builder.Services.AddScoped<IChatHubService, ChatHubService>();
+
+//flight
+builder.Services.AddHttpClient<FlightService>("FlightAPI", (sp, client) =>
 {
-    client.BaseAddress = new Uri("https://localhost:5002");
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config["Urls:FlightApi"];
+    client.BaseAddress = new Uri(baseUrl);
 });
-builder.Services.AddHttpClient<PackageService>(client =>
+builder.Services.AddScoped<FlightService>();
+
+//hotel
+builder.Services.AddHttpClient<HotelService>("HotelAPI", (sp, client) =>
 {
-    client.BaseAddress = new Uri("https://localhost:5003");
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config["Urls:HotelApi"];
+    client.BaseAddress = new Uri(baseUrl);
 });
+builder.Services.AddScoped<HotelService>();
+
+//package
+builder.Services.AddHttpClient<PackageService>("PackageAPI", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config["Urls:PackageApi"];
+    client.BaseAddress = new Uri(baseUrl);
+});
+builder.Services.AddScoped<IPackageService, PackageService>();
 
 var app = builder.Build();
 
