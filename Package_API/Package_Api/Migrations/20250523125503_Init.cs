@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Package_Api.Migrations
 {
     /// <inheritdoc />
-    public partial class PackageDBInit : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -130,6 +130,11 @@ namespace Package_Api.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Employees",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 1, "Batman" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AvailableRooms_HotelId",

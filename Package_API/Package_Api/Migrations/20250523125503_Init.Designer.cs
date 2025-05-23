@@ -12,8 +12,8 @@ using Package_Api.Data;
 namespace Package_Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250523123540_PackageDBInit")]
-    partial class PackageDBInit
+    [Migration("20250523125503_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,13 @@ namespace Package_Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Batman"
+                        });
                 });
 
             modelBuilder.Entity("Package_Api.Models.Flight", b =>

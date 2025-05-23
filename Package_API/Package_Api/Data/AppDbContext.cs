@@ -40,6 +40,10 @@ namespace Package_Api.Data
                 .HasOne(hr => hr.Package)
                 .WithMany(p => p.AvailableRooms)
                 .HasForeignKey(hr => hr.PackageId);
+
+            modelBuilder.Entity<Employee>().HasData(
+                new Employee { Id = 1, Name = "Batman"}
+                );
         }
     }
 }

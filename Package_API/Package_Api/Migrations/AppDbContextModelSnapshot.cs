@@ -73,6 +73,13 @@ namespace Package_Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Batman"
+                        });
                 });
 
             modelBuilder.Entity("Package_Api.Models.Flight", b =>
