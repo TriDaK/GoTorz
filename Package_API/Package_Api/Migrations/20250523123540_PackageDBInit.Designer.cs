@@ -12,8 +12,8 @@ using Package_Api.Data;
 namespace Package_Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250523091212_InitDBSetUp")]
-    partial class InitDBSetUp
+    [Migration("20250523123540_PackageDBInit")]
+    partial class PackageDBInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,6 +110,14 @@ namespace Package_Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()

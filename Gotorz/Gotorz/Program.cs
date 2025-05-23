@@ -26,7 +26,7 @@ builder.Services.AddHttpClient<FlightService>("FlightAPI", (sp, client) =>
     var baseUrl = config["Urls:FlightApi"];
     client.BaseAddress = new Uri(baseUrl);
 });
-builder.Services.AddScoped<FlightService>();
+builder.Services.AddScoped<IFlightService, FlightService>();
 
 //hotel
 builder.Services.AddHttpClient<HotelService>("HotelAPI", (sp, client) =>
@@ -35,7 +35,7 @@ builder.Services.AddHttpClient<HotelService>("HotelAPI", (sp, client) =>
     var baseUrl = config["Urls:HotelApi"];
     client.BaseAddress = new Uri(baseUrl);
 });
-builder.Services.AddScoped<HotelService>();
+builder.Services.AddScoped<IHotelService, HotelService>();
 
 //package
 builder.Services.AddHttpClient<PackageService>("PackageAPI", (sp, client) =>

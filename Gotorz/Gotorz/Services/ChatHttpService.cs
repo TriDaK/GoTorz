@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Gotorz.Services
 {
-    public class ChatHttpService :IChatHttpService
+    public class ChatHttpService : IChatHttpService
     {
         private readonly HttpClient _httpClient;
 

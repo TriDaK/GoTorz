@@ -5,13 +5,13 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-public class HotelService
+public class HotelService : IHotelService
 {
     private readonly HttpClient _httpClient; // the HttpClient used in this service
 
-    public HotelService(HttpClient httpClient)
+    public HotelService(IHttpClientFactory factory)
     {
-        _httpClient = httpClient;
+        _httpClient = factory.CreateClient("HotelAPI");
     }
 
     public async Task<List<Hotel>> SearchHotelsAsync(

@@ -4,9 +4,9 @@
 @using Gotorz.Services
 @rendermode InteractiveServer
 
-@inject FlightService FlightService
-@inject HotelService HotelService
-@inject PackageService PackageService
+@inject IFlightService FlightService
+@inject IHotelService HotelService
+@inject IPackageService PackageService
 
 <h3>Search for Flights</h3>
 
@@ -190,6 +190,8 @@
     {
         outboundFlights = await FlightService.SearchFlightsAsync(from, to, outboundDate, null);
         returnFlights = await FlightService.SearchFlightsAsync(to, from, returnDate, null);
+        hotelCity = to;
+        await SearchHotels();
     }
 
     private void SelectOutboundFlight(Flight flight)

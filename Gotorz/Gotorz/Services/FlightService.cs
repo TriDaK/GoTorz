@@ -7,18 +7,18 @@ using Gotorz.Models;
 
 namespace Gotorz.Services
 {
-    public class FlightService
+    public class FlightService : IFlightService
     {
         private readonly HttpClient _httpClient; // the HttpClient used in this service
 
-        public FlightService(HttpClient httpClient)
+        public FlightService(IHttpClientFactory factory)
         {
-            _httpClient = httpClient;
+            _httpClient = factory.CreateClient("FlightAPI");
         }
 
         public async Task<List<Flight>> SearchFlightsAsync(string? from, string? to, DateTime? departureDate, string? flightNumber)
         {
-            string url = "https://localhost:5001/api/Flight?";
+            string url = "api/Flight?";
 
             if (!string.IsNullOrWhiteSpace(from))
             {

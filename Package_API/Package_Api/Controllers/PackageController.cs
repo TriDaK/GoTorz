@@ -201,7 +201,7 @@ namespace Package_Api.Controllers
             // Request body
             var flights = request.Flights;
             var rooms = request.Rooms;
-            var employeeId = request.EmployeeId;
+            var employeeId = request.Employee.EmployeeId;
             var name = request.Name;
             var description = request.Description;
             
@@ -217,13 +217,26 @@ namespace Package_Api.Controllers
             if (string.IsNullOrEmpty(description))
                 return BadRequest("Description is empty or null");
 
-            // Check if Hotel exists
-            var existingHotel = await _context.Hotels.FirstOrDefaultAsync
-                (h => h.Phone == request.Hotel.Phone);
+                // Check if Hotel exists
+                var existingHotel = new Hotel();
+                try
+                {
+                    existingHotel = await _context.Hotels.FirstOrDefaultAsync
+                        (h => h.Phone == request.Hotel.Phone);
+                }
+                catch
+                {
+
+                }
 
             if (existingHotel == null)
             {
-                existingHotel = new Hotel { Phone = request.Hotel.Phone };
+                existingHotel = new Hotel 
+                { 
+                    Phone = request.Hotel.Phone,
+                    City = request.Hotel.City,
+                    Country = request.Hotel.Country
+                };
                 _context.Hotels.Add(existingHotel);
                 await _context.SaveChangesAsync();
             }
@@ -231,7 +244,7 @@ namespace Package_Api.Controllers
             // Set package with incoming information
             var package = new Package
             {
-                EmployeeId = request.EmployeeId,
+                EmployeeId = request.Employee.EmployeeId,
                 Name = request.Name,
                 Description = request.Description,
                 Flights = request.Flights.Select(f => new Flight

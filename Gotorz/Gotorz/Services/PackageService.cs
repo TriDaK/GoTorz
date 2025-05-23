@@ -10,9 +10,9 @@ namespace Gotorz.Services
     {
         private readonly HttpClient _httpClient; // the HttpClient used in this service
 
-        public PackageService(HttpClient httpClient)
+        public PackageService(IHttpClientFactory factory)
         {
-            _httpClient = httpClient;
+            _httpClient = factory.CreateClient("PackageAPI");
         }
 
         public async Task<HttpResponseMessage> CreatePackageAsync(PackageApiPackage package)
@@ -44,7 +44,9 @@ namespace Gotorz.Services
 
                 Hotel = new PackageApiHotel
                 {
-                    Phone = selectedHotels[0].Phone
+                    Phone = selectedHotels[0].Phone,
+                    City = selectedHotels[0].City,
+                    Country = selectedHotels[0].Country
                 },
 
                 Employee = new Employee 
@@ -58,7 +60,7 @@ namespace Gotorz.Services
 
         public async Task<List<Package>> SearchPackagesAsync(string? city, string? country, DateTime? date)
         {
-            string url = "https://localhost:5003/api/Package/search?";
+            string url = "api/Package/search?";
 
             if (!string.IsNullOrWhiteSpace(city))
             {
@@ -98,7 +100,7 @@ namespace Gotorz.Services
 
         public async Task<Package?> SearchPackageAsyncByID(int id) // ? because then it is OK to search a package that dosn't exist 
         {
-            string url = $"https://localhost:5003/api/Package/{id}";
+            string url = $"api/Package/{id}";
             var apiPackage = await _httpClient.GetFromJsonAsync<PackageApiPackage>(url) ?? new PackageApiPackage();
 
             var package = new Package
@@ -118,7 +120,7 @@ namespace Gotorz.Services
 
         public async Task<List<Package>> GetAllPackagesAsync()
         {
-            string url = $"https://localhost:5003/api/Package";
+            string url = $"api/Package";
             List<Package> packages = new();
             var apiPackages = await _httpClient.GetFromJsonAsync<List<PackageApiPackage>>(url) ?? new List<PackageApiPackage>();
 

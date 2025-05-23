@@ -6,7 +6,10 @@ namespace Gotorz.Models.PackageDTOs
     {
         [JsonPropertyName("phone")]
         public string Phone { get; set; }
-
+        [JsonPropertyName("city")]
+        public string City { get; set; }
+        [JsonPropertyName("country")]
+        public string Country { get; set; }
     }
 }
 
