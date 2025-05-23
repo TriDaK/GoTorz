@@ -12,6 +12,32 @@ namespace Flight_Asp.NetCoreWebApi.Data
                 base.OnModelCreating(modelBuilder);
 
                 modelBuilder.Entity<Flight>().HasData(
+                    // Ud: Billund -> Berlin (1. juni 2025)
+                    new Flight { Id = 1, FlightNumber = "SK1234", FlightStatus = "Scheduled", DestinationFrom = "Billund", AirportFrom = "BLL", DestinationTo = "Berlin", AirportTo = "BER", TimeDeparture = new DateTime(2025, 6, 1, 8, 0, 0), TimeArrival = new DateTime(2025, 6, 1, 9, 15, 0), AvailableSeats = 80, Price = 750 },
+                    new Flight { Id = 2, FlightNumber = "LH5678", FlightStatus = "Scheduled", DestinationFrom = "Billund", AirportFrom = "BLL", DestinationTo = "Berlin", AirportTo = "BER", TimeDeparture = new DateTime(2025, 6, 1, 18, 0, 0), TimeArrival = new DateTime(2025, 6, 1, 19, 15, 0), AvailableSeats = 65, Price = 790 },
+
+                    // Ud: Billund -> London
+                    new Flight { Id = 3, FlightNumber = "BA4321", FlightStatus = "Scheduled", DestinationFrom = "Billund", AirportFrom = "BLL", DestinationTo = "London", AirportTo = "LHR", TimeDeparture = new DateTime(2025, 6, 1, 9, 30, 0), TimeArrival = new DateTime(2025, 6, 1, 10, 50, 0), AvailableSeats = 72, Price = 950 },
+                    new Flight { Id = 4, FlightNumber = "DY7654", FlightStatus = "Scheduled", DestinationFrom = "Billund", AirportFrom = "BLL", DestinationTo = "London", AirportTo = "LHR", TimeDeparture = new DateTime(2025, 6, 1, 17, 0, 0), TimeArrival = new DateTime(2025, 6, 1, 18, 20, 0), AvailableSeats = 90, Price = 910 },
+
+                    // Ud: Billund -> Paris
+                    new Flight { Id = 5, FlightNumber = "AF2468", FlightStatus = "Scheduled", DestinationFrom = "Billund", AirportFrom = "BLL", DestinationTo = "Paris", AirportTo = "CDG", TimeDeparture = new DateTime(2025, 6, 1, 7, 45, 0), TimeArrival = new DateTime(2025, 6, 1, 9, 25, 0), AvailableSeats = 85, Price = 870 },
+                    new Flight { Id = 6, FlightNumber = "SK1357", FlightStatus = "Scheduled", DestinationFrom = "Billund", AirportFrom = "BLL", DestinationTo = "Paris", AirportTo = "CDG", TimeDeparture = new DateTime(2025, 6, 1, 16, 0, 0), TimeArrival = new DateTime(2025, 6, 1, 17, 40, 0), AvailableSeats = 60, Price = 890 },
+
+                    // Retur: Berlin -> Billund (8. juni 2025)
+                    new Flight { Id = 7, FlightNumber = "SK4321", FlightStatus = "Scheduled", DestinationFrom = "Berlin", AirportFrom = "BER", DestinationTo = "Billund", AirportTo = "BLL", TimeDeparture = new DateTime(2025, 6, 8, 10, 0, 0), TimeArrival = new DateTime(2025, 6, 8, 11, 15, 0), AvailableSeats = 70, Price = 770 },
+                    new Flight { Id = 8, FlightNumber = "LH8765", FlightStatus = "Scheduled", DestinationFrom = "Berlin", AirportFrom = "BER", DestinationTo = "Billund", AirportTo = "BLL", TimeDeparture = new DateTime(2025, 6, 8, 20, 0, 0), TimeArrival = new DateTime(2025, 6, 8, 21, 15, 0), AvailableSeats = 66, Price = 800 },
+
+                    // Retur: London -> Billund
+                    new Flight { Id = 9, FlightNumber = "BA8765", FlightStatus = "Scheduled", DestinationFrom = "London", AirportFrom = "LHR", DestinationTo = "Billund", AirportTo = "BLL", TimeDeparture = new DateTime(2025, 6, 8, 11, 0, 0), TimeArrival = new DateTime(2025, 6, 8, 12, 20, 0), AvailableSeats = 77, Price = 970 },
+                    new Flight { Id = 10, FlightNumber = "DY4321", FlightStatus = "Scheduled", DestinationFrom = "London", AirportFrom = "LHR", DestinationTo = "Billund", AirportTo = "BLL", TimeDeparture = new DateTime(2025, 6, 8, 19, 0, 0), TimeArrival = new DateTime(2025, 6, 8, 20, 20, 0), AvailableSeats = 92, Price = 940 },
+                    
+                    // Retur: Paris -> Billund
+                    new Flight { Id = 11, FlightNumber = "AF8642", FlightStatus = "Scheduled", DestinationFrom = "Paris", AirportFrom = "CDG", DestinationTo = "Billund", AirportTo = "BLL", TimeDeparture = new DateTime(2025, 6, 8, 8, 30, 0), TimeArrival = new DateTime(2025, 6, 8, 10, 10, 0), AvailableSeats = 82, Price = 880 },
+                    new Flight { Id = 12, FlightNumber = "SK7531", FlightStatus = "Scheduled", DestinationFrom = "Paris", AirportFrom = "CDG", DestinationTo = "Billund", AirportTo = "BLL", TimeDeparture = new DateTime(2025, 6, 8, 18, 0, 0), TimeArrival = new DateTime(2025, 6, 8, 19, 40, 0), AvailableSeats = 69, Price = 900 }
+                );
+
+                /*modelBuilder.Entity<Flight>().HasData(
                 new Flight
                 {
                     Id = 1,
@@ -278,7 +304,7 @@ namespace Flight_Asp.NetCoreWebApi.Data
                 new Flight { Id = 198, AirportFrom = "BCN", AirportTo = "VIE", AvailableSeats = 200, DestinationFrom = "Barcelona", DestinationTo = "Vienna", FlightNumber = "2103", FlightStatus = "On Time", TimeArrival = new DateTime(2024, 4, 25, 5, 45, 0), TimeDeparture = new DateTime(2024, 4, 24, 20, 45, 0), Price = 350 },
                 new Flight { Id = 199, AirportFrom = "FCO", AirportTo = "ZRH", AvailableSeats = 200, DestinationFrom = "Rome", DestinationTo = "Zurich", FlightNumber = "3214", FlightStatus = "Delayed", TimeArrival = new DateTime(2024, 4, 25, 5, 30, 0), TimeDeparture = new DateTime(2024, 4, 24, 20, 30, 0), Price = 360 },
                 new Flight { Id = 200, AirportFrom = "LIS", AirportTo = "BRU", AvailableSeats = 220, DestinationFrom = "Lisbon", DestinationTo = "Brussels", FlightNumber = "4325", FlightStatus = "On Time", TimeArrival = new DateTime(2024, 4, 25, 5, 15, 0), TimeDeparture = new DateTime(2024, 4, 24, 20, 15, 0), Price = 370 }
-            );
+            );*/
             }
         }
     }
